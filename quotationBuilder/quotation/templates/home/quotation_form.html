@@ -1,0 +1,268 @@
+{% extends './basic.html' %} {% load static %} {% block title %} Quotation
+{%endblock title%} {% block css %} {%endblock css %} {% block body %}
+<!-- Page Wrapper -->
+<div id="wrapper">
+  {% comment %}
+  <!-- Sidebar -->
+  <ul
+    class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion"
+    id="accordionSidebar"
+  >
+    <a
+      class="sidebar-brand d-flex align-items-center justify-content-center"
+      href="/"
+    >
+      <div class="sidebar-brand-icon rotate-n-15">
+        <i class="fas fa-laugh-wink"></i>
+      </div>
+      <div class="sidebar-brand-text mx-3">Dashboard</div>
+    </a>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider my-0" />
+
+    <!-- Nav Item - Dashboard -->
+    <li class="nav-item active">
+      <a class="nav-link" href="/dashboard/malt">
+        <i class="fas fa-fw fa-tachometer-alt"></i>
+        <span>Malt</span></a
+      >
+    </li>
+    <li class="nav-item active">
+      <a class="nav-link" href="/dashboard/hops">
+        <i class="fas fa-fw fa-tachometer-alt"></i>
+        <span>Hops</span></a
+      >
+    </li>
+    <li class="nav-item active">
+      <a class="nav-link" href="/dashboard/yeast">
+        <i class="fas fa-fw fa-tachometer-alt"></i>
+        <span>Yeast</span></a
+      >
+    </li>
+    <!-- Divider -->
+    <hr class="sidebar-divider d-none d-md-block" />
+  </ul>
+  {% endcomment %}
+
+  <!-- End of Sidebar -->
+
+  <!-- Content Wrapper -->
+  <div id="content-wrapper" class="d-flex flex-column">
+    <!-- Main Content -->
+    <div id="content">
+      <!-- Topbar -->
+      <nav
+        class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow"
+      >
+        <!-- Sidebar Toggle (Topbar) -->
+        <button
+          id="sidebarToggleTop"
+          class="btn btn-link d-md-none rounded-circle mr-3"
+        >
+          <i class="fa fa-bars"></i>
+        </button>
+      </nav>
+
+      <div class="container p-3">
+        <div class="d-sm-flex align-items-center justify-content-between mb-4">
+          <h1 class="h3 mb-0 text-gray-800">Quotation Inputs</h1>
+        </div>
+        <form method="post">
+          {% csrf_token %}
+
+          <div class="form-group">
+            <label for="hotel_name">Hotel Name</label>
+            <select
+              class="form-select form-control"
+              aria-label="hotel_name"
+              id="hotel_name"
+              name="hotel_name"
+            >
+              {%for hotel_name in hotels%}
+              <option value="{{hotel_name.id}}">
+                {{hotel_name.hotel_name}}
+              </option>
+              {%endfor%}
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="area">Area</label>
+            <select
+              class="form-select form-control"
+              aria-label="area"
+              id="area"
+              name="area"
+            >
+              {%for area in hotel_dict.area%}
+              <option value="{{area}}">{{area}}</option>
+              {%endfor%}
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="country">Country</label>
+            <select
+              class="form-select form-control"
+              aria-label="country"
+              id="country"
+              name="country"
+            >
+              {%for country in hotel_dict.country%}
+              <option value="{{country}}">{{country}}</option>
+              {%endfor%}
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="adult_res">Number adult resident: </label>
+            <input
+              type="number"
+              class="form-control"
+              id="adult_res"
+              placeholder="Number adult resident"
+              name="adult_res"
+            />
+          </div>
+          <div class="form-group">
+            <label for="adult_nonres">Number adult Non-Resident: </label>
+            <input
+              type="number"
+              class="form-control"
+              id="adult_nonres"
+              placeholder="Number Adult Non-Resident"
+              name="adult_nonres"
+            />
+          </div>
+          <div class="form-group">
+            <label for="child_res">Number Child Resident: </label>
+            <input
+              type="number"
+              class="form-control"
+              id="child_res"
+              placeholder="Number Child Resident"
+              name="child_res"
+            />
+          </div>
+          <div class="form-group">
+            <label for="child_nonres">Number Child Non-Resident: </label>
+            <input
+              type="number"
+              class="form-control"
+              id="child_nonres"
+              placeholder="Number Child Non-Resident"
+              name="child_nonres"
+            />
+          </div>
+          <h4>Room Request</h4>
+
+          <div class="form-group">
+            <label for="package_type">Package Type</label>
+            <select
+              class="form-select form-control"
+              aria-label="package_type"
+              id="package_type"
+              name="package_type"
+            >
+              {%for package_type in room_dict.package_type%}
+              <option value="{{package_type}}">{{package_type}}</option>
+              {%endfor%}
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="room_category">Room Category</label>
+            <select
+              class="form-select form-control"
+              aria-label="room_category"
+              id="room_category"
+              name="room_category"
+            >
+              {%for room_category in room_dict.room_category%}
+              <option value="{{room_category}}">{{room_category}}</option>
+              {%endfor%}
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="room_type">Room Type</label>
+            <select
+              class="form-select form-control"
+              aria-label="room_type"
+              id="room_type"
+              name="room_type"
+            >
+              {%for room_type in room_dict.room_type%}
+              <option value="{{room_type}}">{{room_type}}</option>
+              {%endfor%}
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="number_of_room_category"
+              >No of rooms for category type</label
+            >
+            <input
+              type="number"
+              class="form-control"
+              id="number_of_room_category"
+              placeholder="No of rooms for category type"
+              name="number_of_room_category"
+            />
+          </div>
+          <div class="form-group">
+            <label for="number_of_adult_sharing">No of adults sharing</label>
+            <input
+              type="number"
+              class="form-control"
+              id="number_of_adult_sharing"
+              placeholder="No of adults sharing"
+              name="number_of_adult_sharing"
+            />
+          </div>
+          <div class="form-group">
+            <label for="old_child_sharing">No of old children sharing</label>
+            <input
+              type="number"
+              class="form-control"
+              id="old_child_sharing"
+              placeholder="No of old children sharing"
+              name="old_child_sharing"
+            />
+          </div>
+          <div class="form-group">
+            <label for="young_child_sharing"
+              >No of young children sharing</label
+            >
+            <input
+              type="number"
+              class="form-control"
+              id="young_child_sharing"
+              placeholder="No of young children sharing"
+              name="young_child_sharing"
+            />
+          </div>
+          <div class="text-center">
+            <button type="submit" class="btn btn-primary mt-1 p-2 w-50">
+              Submit
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- End of Topbar -->
+    </div>
+
+    <br />
+    <!-- Footer -->
+    <footer class="sticky-footer bg-white">
+      <div class="container my-auto">
+        <div class="copyright text-center my-auto">
+          <span>Copyright &copy; Your Website 2021</span>
+        </div>
+      </div>
+    </footer>
+    <!-- End of Footer -->
+  </div>
+  <!-- End of Content Wrapper -->
+</div>
+{%endblock body%}

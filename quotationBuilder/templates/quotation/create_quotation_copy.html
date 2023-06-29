@@ -1,0 +1,39 @@
+{% extends 'partials/base.html' %}
+
+{% block content %}
+  <h1>Create Quotation</h1>
+  <form method="post" action="{% url 'create_quotation' %}">
+    {% csrf_token %}
+    
+    {{ main_form.as_p }}
+    
+    {{ room_formset.management_form }}
+    
+    <h3>Room Requests:</h3>
+    {% for room_form in room_formset %}
+      <div>
+        {{ room_form.as_p }}
+        {% if room_form.instance.pk %}
+          <a href="{% url 'delete_room_request' room_form.instance.pk %}">Delete</a>
+        {% endif %}
+      </div>
+    {% endfor %}
+    
+    <button type="submit">Submit</button>
+  </form>
+
+  
+
+  {{ room_formset.management_form.media }}
+  <script type="text/javascript">
+    function addRoomForm() {
+      var formCount = parseInt($('#id_form-TOTAL_FORMS').val());
+      var template = $('#room-form-template').html().replace(/__prefix__/g, formCount);
+      $('#room-forms-container').append(template);
+      $('#id_form-TOTAL_FORMS').val(formCount + 1);
+    }
+  </script>
+
+{% endblock %}
+
+

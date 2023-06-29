@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quotation Builder</title>
+</head>
+<body>
+    <header>
+        <h1> <a href="/">Quotation Builder</a>  </h1>
+        <nav>
+            <ul>
+                <li><a href="{% url 'login' %}">Login</a></li>
+                <li><a href="/hotel/list">Hotels</a></li>
+                <li><a href="/hotelrate/list">Hotel Rates</a></li>
+                <li><a href="/company/list">Companies</a></li>
+                <li><a href="/hotel/add">Add Hotel</a></li>
+                <li><a href="/hotelrate/add">Add HotelRate</a></li>
+                <li><a href="/company/add">Add Company</a></li>
+                <li><a href="/create_quotation">Create Quotation</a></li>
+                <li><a href="{% url 'logout' %}">logout</a></li>
+                <!-- Add other navigation links -->
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer>
+        <p>&copy; 2023 Quotation Builder. All rights reserved.</p>
+    </footer>
+</body>
+</html>
+
+
+

@@ -1,0 +1,82 @@
+{% extends 'partials/base.html' %}
+
+{% block content %}
+  <h1>Create Quotation</h1>
+  <form method="POST" action="{% url 'create_quotation' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <h3>Room Requests</h3>
+    <div class="room-request-template">
+        {{ room_request_form.management_form }}
+        {{ room_request_form.non_form_errors }}
+        {% for form in room_request_form %}
+            {{ form}}
+        {% endfor %}
+    </div>
+    <button type="button" class="add-room-request">Add Room Request</button>
+    <br>
+
+    <button type="submit">Create Quotation</button>
+  </form>
+  
+  <!-- Add the following script in your HTML file or template -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+  $(document).ready(function() {
+      // Handle country field change event
+      $('#id_country').on('change', function() {
+          var country = $(this).val();
+          // Make an AJAX request to retrieve areas based on the selected country
+          $.ajax({
+              url: '/get_areas/',
+              type: 'GET',
+              data: { 'country': country },
+              success: function(response) {
+                  var areaSelect = $('#id_area');
+                  areaSelect.empty();
+                  $.each(response.areas, function(index, area) {
+                      areaSelect.append($('<option></option>').attr('value', area).text(area));
+                  });
+              },
+              error: function(xhr, status, error) {
+                  console.error(error);
+              }
+          });
+      });
+
+      // Handle area field change event
+      $('#id_area').on('change', function() {
+          var country = $('#id_country').val();
+          var area = $(this).val();
+          // Make an AJAX request to retrieve hotel names based on the selected country and area
+          $.ajax({
+              url: '/get_hotels/',
+              type: 'GET',
+              data: { 'country': country, 'area': area },
+              success: function(response) {
+                  var hotelSelect = $('#id_hotel_name');
+                  hotelSelect.empty();
+                  $.each(response.hotels, function(index, hotel) {
+                      hotelSelect.append($('<option></option>').attr('value', hotel).text(hotel));
+                  });
+              },
+              error: function(xhr, status, error) {
+                  console.error(error);
+              }
+          });
+      });
+
+      // Handle adding room request dynamically
+      var roomRequestTemplate = $('.room-request-template');
+      $('.add-room-request').on('click', function() {
+          var roomRequest = roomRequestTemplate.clone();
+          roomRequest.removeClass('room-request-template');
+          roomRequest.insertBefore($('.add-room-request'));
+      });
+  });
+  </script>
+
+{% endblock %}
+
+

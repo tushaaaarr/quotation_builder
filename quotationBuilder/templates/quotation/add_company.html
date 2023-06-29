@@ -1,0 +1,27 @@
+{% extends 'partials/base.html' %}
+
+{% block content %}
+  <h1>Add Company</h1>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Add Company</button>
+  </form>
+{% endblock %}
+
+
+<!-- 
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+      <div class ="addHotel"> 
+        <h2> Add Hotel details </h2>
+        <form class="site-form" action ="{% url 'quotation:addHotel'}" method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          {{form.as_p}}
+          <input type="submit" value="Add Hotel">
+        </form>
+      </div>
+</html> -->
+
