@@ -210,6 +210,14 @@ def update_hotel_rate(request, pk):
 
 
 def create_quatation_new(request):
+    hotel_rates = HotelRate.objects.all()
+    available_dates = []
+    for hotelrate in hotel_rates:
+        available_dates.append({
+        "date_applicable_from":str(hotelrate.date_applicable_from),
+        "date_applicable_from":str(hotelrate.date_applicable_to)}
+        )
+    
     hotels = Hotel.objects.all()
     if request.method == "POST":
         country = request.POST.get('country',False)
@@ -247,16 +255,14 @@ def create_quatation_new(request):
         HotelRateInstance = HotelRateInstance.filter(
         package_type = package_type,
         room_type = room_type,
-        room_category = room_category
+        room_category = room_category,
         ) 
-
-
         QuotationRoomRequest(
             quotation_id = Quotation_ins,
-            package_type = HotelRateInstance,
+            package_type =HotelRate.objects.get(id = HotelRateInstance[0].id),
             no_of_rooms_for_category_type = no_of_room_category,
             no_of_adults_sharing = no_of_adult_sharing,
-            no_of_children_sharing = float(int(old_child_sharing) + int(yound_child_sharing)),
+            no_of_children_sharing = int(old_child_sharing) + int(yound_child_sharing),
             no_of_old_children_sharing = old_child_sharing,
             no_of_young_children_sharing = yound_child_sharing
         ).save()
@@ -283,9 +289,6 @@ def create_quatation_new(request):
                 HotelRateInstance = HotelRateInstance.filter(traveller_type = "Resident")
                 rates['child_res'] = HotelRateInstance[0].child_rate * int(child_res)
 
-        print(rates)
-
-        
         print("HotelRateInstance",HotelRateInstance)
 
     main_form = QuotationMainRequestForm()
@@ -305,9 +308,9 @@ def create_quatation_new(request):
         'room_formset': room_formset,
         'hotels':hotels,
         "hotel_dict":hotel_dict,
-        "room_dict":room_dict
+        "room_dict":room_dict,
+        "available_dates":available_dates
     }
-
 
     return render(request,'home/quotation_form.html',context=context)
 
