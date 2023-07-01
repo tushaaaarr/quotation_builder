@@ -226,9 +226,15 @@ class QuotationMainRequest(TimeStampMixin):
 
 
 class QuotationRoomRequest(models.Model):
+    PACKAGETYPE = [('FB Accomodation Only', 'FB Accomodation Only'), ('All inc', 'all inclusive'),
+                   ('Ground', 'Ground'), ('Air', 'Air'), 
+                   ('Half Board', 'Half Board'),('Bed & Breakfast', 'Bed & Breakfast')]
     
     quotation_id = models.ForeignKey(QuotationMainRequest, on_delete=models.PROTECT)
-    package_type = models.ForeignKey(HotelRate, on_delete=models.PROTECT, related_name='package_type_requests')
+    # package_type = models.ForeignKey(HotelRate, on_delete=models.PROTECT, related_name='package_type_requests')
+    package_type = models.CharField(choices=PACKAGETYPE, blank=True, max_length=200)
+   
+   
     # room_category = models.ForeignKey(HotelRate, on_delete=models.PROTECT, related_name='room_category_requests')
     # room_type = models.ForeignKey(HotelRate, on_delete=models.PROTECT, related_name='room_type_requests')
     

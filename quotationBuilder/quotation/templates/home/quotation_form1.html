@@ -1,26 +1,17 @@
-{% extends './basic.html' %} {% load static %} {% block title %} Quotation
-{%endblock title%} {%block css %} {%endblock css %} {% block body %}
+{% extends './basic.html' %} {% load static %} {% block title %} Quotation {%endblock title%}
+{%block css %} {%endblock css %} {% block body %}
 
 <style>
   #mod_date {
     color: red !important;
-  }
-  #err{
-    display:none;
   }
 </style>
 <!-- Page Wrapper -->
 <div id="wrapper">
   {% comment %}
   <!-- Sidebar -->
-  <ul
-    class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion"
-    id="accordionSidebar"
-  >
-    <a
-      class="sidebar-brand d-flex align-items-center justify-content-center"
-      href="/"
-    >
+  <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/">
       <div class="sidebar-brand-icon rotate-n-15">
         <i class="fas fa-laugh-wink"></i>
       </div>
@@ -61,14 +52,9 @@
     <!-- Main Content -->
     <div id="content">
       <!-- Topbar -->
-      <nav
-        class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow"
-      >
+      <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
         <!-- Sidebar Toggle (Topbar) -->
-        <button
-          id="sidebarToggleTop"
-          class="btn btn-link d-md-none rounded-circle mr-3"
-        >
+        <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
           <i class="fa fa-bars"></i>
         </button>
       </nav>
@@ -77,21 +63,14 @@
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
           <h1 class="h3 mb-0 text-gray-800">Create Quotation</h1>
         </div>
-        <form onsubmit="handlesubmit(event)" id="quote">
+        <form method="post" onsubmit="handlesubmit(event)" id="quote">
           {% csrf_token %}
           <div class="row">
             <!-- from date to date -->
             <div class="col-6">
               <div class="form-group">
                 <label for="date_frm">Date From</label>
-
-                <input
-                  type="date"
-                  id="date_frm"
-                  name="date_frm"
-                  class="form-control"
-                />
-                <!-- <select
+                <select
                   class="form-select form-control"
                   aria-label="date_frm"
                   id="date_frm"
@@ -102,19 +81,13 @@
                     {{available_dates.date_applicable_from}}
                   </option>
                   {%endfor%}
-                </select> -->
+                </select>
               </div>
             </div>
             <div class="col-6">
               <div class="form-group">
                 <label for="date_to">Date To</label>
-                <input
-                  type="date"
-                  id="date_to"
-                  name="date_to"
-                  class="form-control"
-                />
-                <!-- <select
+                <select
                   class="form-select form-control"
                   aria-label="date_to"
                   id="date_to"
@@ -125,11 +98,14 @@
                     {{available_dates.date_applicable_from}}
                   </option>
                   {%endfor%}
-                </select> -->
+                </select>
               </div>
             </div>
 
-            <div class="col-6">
+            <!-- country and area -->
+
+
+                   <div class="col-6">
               <div class="form-group">
                 <label for="country">Country</label>
                 <select
@@ -137,25 +113,27 @@
                   aria-label="country"
                   id="country"
                   name="country"
+
                 >
-                  <option value="000">-Select Country-</option>
+ <option value="000">-Select Country-</option>
                 </select>
               </div>
             </div>
 
+
+
             <div class="col-6">
               <div class="form-group">
                 <label for="area">Area</label>
-                <select
-                  class="form-select form-control"
-                  aria-label="area"
-                  id="state"
-                  name="state"
-                >
-                  <option value="000">-Select Area-</option>
+                <select class="form-select form-control" aria-label="area" id="state" name="state">
+<option value="000">-Select Area-</option>
+
                 </select>
               </div>
             </div>
+
+
+
 
             <!-- Hotel name -->
             <div class="col-12">
@@ -168,7 +146,8 @@
                   name="hotel_name"
                 >
                   <option value="000">-Select Hotel-</option>
-                  <!--                  <option value="{{hotel_name.id}}">{{hotel_name.hotel_name}}</option>-->
+<!--                  <option value="{{hotel_name.id}}">{{hotel_name.hotel_name}}</option>-->
+
                 </select>
               </div>
             </div>
@@ -183,7 +162,6 @@
                   id="adult_res"
                   placeholder="Number adult resident"
                   name="adult_res"
-                  value="0"
                 />
               </div>
             </div>
@@ -196,7 +174,6 @@
                   id="adult_nonres"
                   placeholder="Number Adult Non-Resident"
                   name="adult_nonres"
-                  value="0"
                 />
               </div>
             </div>
@@ -210,7 +187,6 @@
                   id="child_res"
                   placeholder="Number Child Resident"
                   name="child_res"
-                  value="0"
                 />
               </div>
             </div>
@@ -223,7 +199,6 @@
                   id="child_nonres"
                   placeholder="Number Child Non-Resident"
                   name="child_nonres"
-                  value="0"
                 />
               </div>
             </div>
@@ -281,16 +256,13 @@
             </div>
             <div class="col-6">
               <div class="form-group">
-                <label for="number_of_room_category"
-                  >No of rooms for category type</label
-                >
+                <label for="number_of_room_category">No of rooms for category type</label>
                 <input
                   type="number"
                   class="form-control"
                   id="number_of_room_category"
                   placeholder="No of rooms for category type"
                   name="number_of_room_category"
-                  value="0"
                 />
               </div>
             </div>
@@ -304,9 +276,8 @@
                   type="number"
                   class="form-control"
                   id="Adult_count"
-                  placeholder="No of Adults--"
+                  placeholder="No of Adults"
                   name="Adult_count"
-                  value="0"
                 />
               </div>
             </div>
@@ -320,66 +291,49 @@
                   id="child_count"
                   placeholder="No of Children"
                   name="child_count"
-                  value="0"
                 />
               </div>
             </div>
             <div class="col-6">
               <div class="form-group">
-                <label for="old_child_sharing"
-                  >No of old children sharing</label
-                >
+                <label for="old_child_sharing">No of old children sharing</label>
                 <input
                   type="number"
                   class="form-control"
                   id="old_child_sharing"
                   placeholder="No of old children sharing"
                   name="old_child_sharing"
-                  value="0"
                 />
               </div>
             </div>
 
             <div class="col-6">
               <div class="form-group">
-                <label for="young_child_sharing"
-                  >No of young children sharing</label
-                >
+                <label for="young_child_sharing">No of young children sharing</label>
                 <input
                   type="number"
                   class="form-control"
                   id="young_child_sharing"
                   placeholder="No of young children sharing"
                   name="young_child_sharing"
-                  value="0"
                 />
               </div>
             </div>
           </div>
 
-          <button type="button" class="btn btn-primary">Add Room</button>
-
           <div class="d-flex align-items-center justify-content-between">
             <button
-              type="button"
+              type="submit"
               class="btn btn-primary mt-1 p-2 w-50 mr-3"
               data-toggle="modal"
               data-target="#exampleModalCenter"
             >
               Preview / Download
             </button>
-            <button type="submit" class="btn btn-primary mt-1 p-2 w-50">
-              Submit
-            </button>
+            <button type="submit" class="btn btn-primary mt-1 p-2 w-50">Submit</button>
             <!-- <button type="submit" class="btn btn-primary mt-1 p-2 w-50">Submit</button> -->
           </div>
         </form>
-        <p class="bg-warning text-dark p-3 w-100" id="err">
-
-          Room Type Not Found
-
-
-        </p>
       </div>
 
       <!-- End of Topbar -->
@@ -400,24 +354,15 @@
           <div class="modal-header">
             <div>
               <h5 class="modal-title" id="mod_company">Company Name</h5>
-              <p class="fs-4 fw-lighter d-block mb-0 pb-0" id="mod_address">
-                123 sesame street
-              </p>
+              <p class="fs-4 fw-lighter d-block mb-0 pb-0" id="mod_address">123 sesame street</p>
             </div>
-            <button
-              type="button"
-              class="close"
-              data-dismiss="modal"
-              aria-label="Close"
-            >
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
           <div class="d-flex justify-content-between px-3">
             <p class="text-lead fw-bold">
-              Date:<span id="mod_date" class="text-lead fw-bold">
-                22/June/2023</span
-              >
+              Date:<span id="mod_date" class="text-lead fw-bold"> 22/June/2023</span>
             </p>
             <p class="text-lead fw-bold"><span id="mod_id"> #123ACV69</span></p>
           </div>
@@ -425,18 +370,11 @@
           <div class="modal-body">
             <h5 class="fw-bold display-6" id="mhead">Trip Summary</h5>
             <p class="py-0 my-1">
-              Date: <span id="mod_fromdt">22/05/2023</span> To
-              <span id="mod_todt">22/06/2023</span>
+              Date: <span id="mod_fromdt">22/05/2023</span> To <span id="mod_todt">22/06/2023</span>
             </p>
-            <p class="py-0 my-1">
-              Total Adult travellers: <span id="mod_travAdult">5</span>
-            </p>
-            <p class="py-0 my-1">
-              Total Child travellers: <span id="mod_travChild">10</span>
-            </p>
-            <p class="py-0 my-1">
-              Total Rooms: <span id="mod_totalRoom">8</span>
-            </p>
+            <p class="py-0 my-1">Total Adult travellers: <span id="mod_travAdult">5</span></p>
+            <p class="py-0 my-1">Total Child travellers: <span id="mod_travChild">10</span></p>
+            <p class="py-0 my-1">Total Rooms: <span id="mod_totalRoom">8</span></p>
 
             <div class="text-center py-1">
               <img
@@ -445,53 +383,50 @@
               />
             </div>
 
-            <table class="table table-striped" id="datatable">
+            <table class="table table-striped">
               <thead class="bg-info text-light">
                 <tr>
-                  <th scope="col">Quantity</th>
-                  <th scope="col">Item</th>
-                  <th scope="col">KES</th>
-                  <th scope="col">USD</th>
+                  <th scope="col">#</th>
+                  <th scope="col">First</th>
+                  <th scope="col">Last</th>
+                  <th scope="col">Handle</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <th scope="row" id="row1">1</th>
-                  <td id="row1col1"></td>
-                  <td id="row1col2"></td>
-                  <td id="row1col3"></td>
+                  <th scope="row">1</th>
+                  <td>Mark</td>
+                  <td>Otto</td>
+                  <td>@mdo</td>
                 </tr>
                 <tr>
-                  <th scope="row"  id="row2">2</th>
-                  <td id="row2col1"></td>
-                  <td id="row2col2"></td>
-                  <td id="row2col2"></td>
+                  <th scope="row">2</th>
+                  <td>Jacob</td>
+                  <td>Thornton</td>
+                  <td>@fat</td>
                 </tr>
                 <tr>
-
+                  <th scope="row">3</th>
+                  <td>Larry</td>
+                  <td>the Bird</td>
+                  <td>@twitter</td>
+                </tr>
               </tbody>
             </table>
 
             <table class="table" id="contract">
               <tr>
                 <td>
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Et
-                  asperiores deserunt vero nemo! Totam cum alias magni obcaecati
-                  iusto consequuntur earum excepturi nesciunt porro? Accusamus
-                  neque dolorem quasi necessitatibus iste.
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Et asperiores deserunt
+                  vero nemo! Totam cum alias magni obcaecati iusto consequuntur earum excepturi
+                  nesciunt porro? Accusamus neque dolorem quasi necessitatibus iste.
                 </td>
               </tr>
             </table>
           </div>
 
           <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-dismiss="modal"
-            >
-              Close
-            </button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             <button type="button" class="btn btn-primary">Download</button>
           </div>
         </div>
@@ -535,46 +470,19 @@
     }
 
     // Print the JSON string
-    console.log(JSON.stringify(formDataJson));
+    console.log(formDataJson);
     console.log(formDataJson.hotel_name);
 
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function () {
-      if (this.readyState == 4 && this.status == 200) {
-        console.log(this.responseText);
-        let fdata = JSON.parse(this.responseText);
-        console.log(fdata);
-        let tdate = new Date();
-        document.getElementById("mod_company").innerHTML = fdata.hotel_name;
-        document.getElementById("mod_address").innerHTML =
-          fdata.state + "," + fdata.country;
-        document.getElementById("mod_date").innerHTML =
-          tdate.toLocaleDateString();
-        document.getElementById("mod_fromdt").innerHTML = fdata.date_frm;
-        document.getElementById("mod_todt").innerHTML = fdata.date_to;
-        document.getElementById("mod_travAdult").innerHTML =
-          fdata.total_adult_travellers;
-        document.getElementById("mod_travChild").innerHTML =
-          fdata.total_child_travellers;
-        document.getElementById("mod_totalRoom").innerHTML = fdata.total_rooms;
-        document.getElementById("row1col1").innerHTML = fdata.hotel_name + ", "+ fdata.package_type
-        document.getElementById("row1col3").innerHTML = fdata.adult_res +  fdata.adult_res
-
-
-// Row 2
-
-        document.getElementById("row2col1").innerHTML = fdata.hotel_name + ", "+ fdata.package_type
-        document.getElementById("row2col2").innerHTML = fdata.adult_res +  fdata.adult_res
-
-
-      }
-
-      else{
-        document.getElementById("err").style.display="block"
-      }
-    };
-    xhttp.open("POST", "http://127.0.0.1:8000/get_form_data/");
-    xhttp.send(JSON.stringify(formDataJson));
+    let tdate = new Date();
+    document.getElementById("mod_company").innerHTML = formDataJson.hotel_name;
+    document.getElementById("mod_address").innerHTML =
+      formDataJson.area + "," + formDataJson.country;
+    document.getElementById("mod_date").innerHTML = tdate.toLocaleDateString();
+    document.getElementById("mod_fromdt").innerHTML = formDataJson.date_frm;
+    document.getElementById("mod_todt").innerHTML = formDataJson.date_to;
+    document.getElementById("mod_travAdult").innerHTML = formDataJson.Adult_count;
+    document.getElementById("mod_travChild").innerHTML = formDataJson.child_count;
+    document.getElementById("mod_totalRoom").innerHTML = formDataJson.number_of_room_category;
   }
 
   function downloadModalData() {
@@ -594,10 +502,8 @@
     var modid = modalContent.querySelector("#mod_id").innerText;
     var fromDate = modalContent.querySelector("#mod_fromdt").innerText;
     var toDate = modalContent.querySelector("#mod_todt").innerText;
-    var adultTravellers =
-      modalContent.querySelector("#mod_travAdult").innerText;
-    var childTravellers =
-      modalContent.querySelector("#mod_travChild").innerText;
+    var adultTravellers = modalContent.querySelector("#mod_travAdult").innerText;
+    var childTravellers = modalContent.querySelector("#mod_travChild").innerText;
     var totalRooms = modalContent.querySelector("#mod_totalRoom").innerText;
 
     // Set the document content
@@ -630,64 +536,57 @@
       },
     };
 
-    doc.autoTable({
-      html: table,
-      startY: options.startY,
-      margin: options.margin,
-    });
+    doc.autoTable({ html: table, startY: options.startY, margin: options.margin });
     doc.autoTable({ html: contra, startY: doc.autoTable.previous.finalY + 10 });
 
     // Save the document
     doc.save("modal_data.pdf");
   }
-  var downloadButton = document.querySelector(
-    "#exampleModalCenter .modal-footer .btn-primary"
-  );
+  var downloadButton = document.querySelector("#exampleModalCenter .modal-footer .btn-primary");
   downloadButton.addEventListener("click", downloadModalData);
 </script>
-
 <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
 <script>
-  var myJson = {{jsonData | safe}}
-  $.each(myJson.country, function (index, value) {
-      var country_id;
-      var state_id;
-      var city_id;
+var myJson = {{jsonData | safe}}
+$.each(myJson.country, function (index, value) {
+    var country_id;
+    var state_id;
+    var city_id;
 
-          $("#country").append('<option rel="' + index + '" value="'+value.id+'">'+value.name+'</option>');
+        $("#country").append('<option rel="' + index + '" value="'+value.id+'">'+value.name+'</option>');
 
-          $("#country").change(function () {
-              $("#state, #hotel_name").find("option:gt(0)").remove();
-              $("#state").find("option:first").text("Loading...");
+        $("#country").change(function () {
+            $("#state, #hotel_name").find("option:gt(0)").remove();
+            $("#state").find("option:first").text("Loading...");
 
-              country_id = $(this).find('option:selected').attr('rel');
-              console.log("Country INDEX : " + country_id);
+            country_id = $(this).find('option:selected').attr('rel');
+            console.log("Country INDEX : " + country_id);
 
-              $("#state").find("option:first").remove();
-              $.each(myJson.country[country_id].states, function (index1, value1) {
-                  $("#state").append('<option rel="' + index1 + '" value="'+value1.id+'">'+value1.name+'</option>');
-              });
+            $("#state").find("option:first").remove();
+            $.each(myJson.country[country_id].states, function (index1, value1) {
+                $("#state").append('<option rel="' + index1 + '" value="'+value1.id+'">'+value1.name+'</option>');
+            });
 
-          });
-
-
-          $("#state").change(function () {
-              $("#hotel_name").find("option:gt(0)").remove();
-              $("#hotel_name").find("option:first").text("Loading...");
-
-              state_id = $(this).find('option:selected').attr('rel');
-              console.log("State INDEX : " + state_id);
-
-              $("#hotel_name").find("option:first").remove();
-              $.each(myJson.country[country_id].states[state_id].hotels, function (index2, value2) {
-                  //$("#hotel_name").find("option:first").text("");
-                  $("#hotel_name").append('<option rel="' + index2 + '" value="'+value2.id+'">'+value2.name+'</option>');
-              });
+        });
 
 
-          });
+        $("#state").change(function () {
+            $("#hotel_name").find("option:gt(0)").remove();
+            $("#hotel_name").find("option:first").text("Loading...");
 
-  });
+            state_id = $(this).find('option:selected').attr('rel');
+            console.log("State INDEX : " + state_id);
+
+            $("#hotel_name").find("option:first").remove();
+            $.each(myJson.country[country_id].states[state_id].hotels, function (index2, value2) {
+                //$("#hotel_name").find("option:first").text("");
+                $("#hotel_name").append('<option rel="' + index2 + '" value="'+value2.id+'">'+value2.name+'</option>');
+            });
+
+
+        });
+
+});
+
 </script>
-
 {%endblock body%}

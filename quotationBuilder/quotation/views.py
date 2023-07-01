@@ -4,6 +4,8 @@ from django.contrib.auth.decorators import user_passes_test
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponseRedirect
 from django.contrib import messages
 from django.conf import settings
+from django.http import JsonResponse
+
 
 from quotationBuilder.custom.mixins_views import StatusFieldMixin
 from .forms import *
@@ -19,6 +21,7 @@ from rest_framework import viewsets
 import quotation.serializers as serializers_quotation
 import quotation.models as models_quotation
 
+from django.views.decorators.csrf import csrf_exempt
 
 from .serializers import RegisterSerializer, MyTokenObtainPairSerializer
 from rest_framework.permissions import AllowAny
@@ -209,16 +212,338 @@ def update_hotel_rate(request, pk):
     return render(request, 'quotation/update_hotel_rate.html', {'form': form, 'hotel_rate': hotel_rate})
 
 
+
+@csrf_exempt
+def get_form_data(request):
+    hotel_rates = HotelRate.objects.all()
+
+    if request.method == "POST":
+        resp = request.body
+        body_unicode = resp.decode('utf-8') 
+        post_data = json.loads(body_unicode)
+        country = post_data['country']
+        area  = post_data['state']
+        hotel_Id  = post_data['hotel_name']
+        adult_res  = int(post_data['adult_res'])
+        adult_nonres  = int(post_data['adult_nonres'])
+        child_res  = int(post_data['child_res'])
+        child_nonres  = int(post_data['child_nonres'])
+        # Room request
+    
+        package_type = post_data['package_type']
+        room_category = post_data['room_category']
+        room_type = post_data['room_type']
+        no_of_room_category = int(post_data['number_of_room_category'])
+        # no_of_adult_sharing = post_data['no_of_adult_sharing']
+        old_child_sharing = int(post_data['old_child_sharing'])
+        young_child_sharing = int(post_data['young_child_sharing'])
+
+        hotel_instance = Hotel.objects.get(id = hotel_Id)
+        Quotation_ins = QuotationMainRequest(
+            hotel_name = hotel_instance,
+            country = country,
+            area = area,
+            number_adult_resident = adult_res,
+            number_adult_nonresident = adult_nonres,
+            number_child_resident = child_res,
+            number_child_nonresident = child_nonres
+        )
+        Quotation_ins.save()      
+        # package_type_q = HotelRate.objects.get(package_type = package_type,hotel_name = hotel_instance)
+        HotelRateInstance = HotelRate.objects.filter(hotel_name = hotel_instance)
+        HotelRateInstance = HotelRateInstance.filter(
+        package_type = package_type,
+        room_type = room_type,
+        room_category = room_category,
+        ) 
+
+        QuotationRoomRequest(
+            quotation_id = Quotation_ins,
+            package_type = package_type,
+            no_of_rooms_for_category_type = no_of_room_category,
+            # no_of_adults_sharing = no_of_adult_sharing,
+            no_of_children_sharing = int(old_child_sharing) + int(young_child_sharing),
+            no_of_old_children_sharing = old_child_sharing,
+            no_of_young_children_sharing = young_child_sharing
+        ).save()
+
+        rates = {}
+        rates['adult_res'] = False
+        rates['adult_nonres'] = False
+        rates['child_res'] = False
+        rates['child_nonres'] = False
+        
+
+        if adult_nonres > 0:
+            if HotelRateInstance.filter(traveller_type = "Non-Resident").exists():
+                HotelRateInstance = HotelRateInstance.filter(traveller_type = "Non-Resident")
+                rates['adult_nonres'] = HotelRateInstance[0].adult_rate * int(adult_nonres)     
+                  
+
+        if child_nonres > 0:
+            if HotelRateInstance.filter(traveller_type = "Non-Resident").exists():
+                HotelRateInstance = HotelRateInstance.filter(traveller_type = "Non-Resident")
+                rates['child_nonres'] = HotelRateInstance[0].child_rate * int(child_nonres)
+
+        if adult_res > 0:
+            if HotelRateInstance.filter(traveller_type = "Resident").exists():
+                HotelRateInstance = HotelRateInstance.filter(traveller_type = "Resident")
+                rates['adult_res'] = HotelRateInstance[0].adult_rate * int(adult_res)
+
+        if child_res > 0:
+            if HotelRateInstance.filter(traveller_type = "Resident").exists():
+                HotelRateInstance = HotelRateInstance.filter(traveller_type = "Resident")
+                rates['child_res'] = HotelRateInstance[0].child_rate * int(child_res)
+
+        
+        if int(young_child_sharing) > 0:
+            rates['young_child_sharing_rate'] = HotelRateInstance[0].young_child_sharing_rate * int(young_child_sharing)
+        else:
+            rates['young_child_sharing_rate'] = False
+
+        if int(old_child_sharing) > 0:
+            rates['old_child_sharing_rate'] = HotelRateInstance[0].old_child_sharing_rate * int(old_child_sharing)
+        else:
+            rates['old_child_sharing_rate'] = False
+
+
+        OpData = {   
+            "country":country,
+            "hotel_name":hotel_instance.hotel_name,
+            "area":area,
+            "room_category":room_category,
+            "room_type":room_type,
+            "package_type":package_type,
+            "number_adult_resident":adult_res,
+            'number_adult_nonresident':adult_nonres,
+            "number_child_resident":child_res,
+            "number_child_nonresident":child_nonres,
+            "total_adult_travellers":adult_res + adult_nonres,
+            "total_child_travellers":child_res + child_nonres,
+            "total_rooms":no_of_room_category,
+            "package_type":package_type,
+            "no_of_rooms_for_category_type":no_of_room_category,
+            # "no_of_adults_sharing":no_of_adult_sharing,
+            "no_of_children_sharing":int(old_child_sharing) + int(young_child_sharing),
+            "old_child_sharing":old_child_sharing,
+            "young_child_sharing":young_child_sharing,
+            "adult_nonres":rates['adult_nonres'],
+            "child_nonres":rates['child_nonres'],
+            "adult_res":rates['adult_res'],
+            "child_res":rates['child_res'],
+            "old_child_sharing_rate":rates['old_child_sharing_rate'],
+            "young_child_sharing_rate":rates['young_child_sharing_rate'],
+            'date_frm':post_data['date_frm'],
+            'date_to':post_data['date_to'],
+        }
+        print(OpData)
+        return JsonResponse(OpData,safe=False)
+
+
+import json
+@csrf_exempt
 def create_quatation_new(request):
     hotel_rates = HotelRate.objects.all()
     available_dates = []
     for hotelrate in hotel_rates:
         available_dates.append({
         "date_applicable_from":str(hotelrate.date_applicable_from),
+        "date_applicable_to":str(hotelrate.date_applicable_to)}
+        )
+
+    hotels = Hotel.objects.all()
+    hotelnamedict = {}
+    for i in hotels:
+        if i.country not in hotelnamedict:
+            hotelnamedict[i.country] = {}
+        if i.area not in hotelnamedict[i.country]:
+            hotelnamedict[i.country][i.area] = []
+        hotelnamedict[i.country][i.area].append((i.hotel_name,i.id))
+    jsonData = {"country":[]}
+    for country,country_data in hotelnamedict.items():
+        states_data = [{
+            "name" : state,
+            "id" : state,
+            "hotels" : [{"name":hotel,"id":hotel_id} for hotel,hotel_id in state_data]
+        } for state,state_data in country_data.items()]
+        new_country_data = {"name":country,"id":country,"states":states_data}
+        jsonData["country"].append(new_country_data)
+    
+
+    # # if request.method == "POST":
+    #     resp = request.body
+    #     body_unicode = resp.decode('utf-8')
+
+    #     country = post_data['country']
+    #     area  = post_data['area']
+    #     hotel_name  = post_data['hotel_name']
+    #     adult_res  = post_data['adult_res']
+    #     adult_nonres  = post_data['adult_nonres']
+    #     child_res  = post_data['child_res']
+    #     child_nonres  = post_data['child_nonres']
+
+    #     # Room request
+    #     package_type = post_data['package_type']
+    #     room_category = post_data['room_category']
+    #     room_type = post_data['room_type']
+    #     no_of_room_category = post_data['no_of_room_category']
+    #     no_of_adult_sharing = post_data['no_of_adult_sharing']
+    #     old_child_sharing = post_data['old_child_sharing',0)
+    #     young_child_sharing = post_data['young_child_sharing',0)
+
+    #     hotel_instance = Hotel.objects.get(id = hotel_name)
+    #     Quotation_ins = QuotationMainRequest(
+    #         hotel_name = hotel_instance,
+    #         country = country,
+    #         area = area,
+    #         number_adult_resident = adult_res,
+    #         number_adult_nonresident = adult_nonres,
+    #         number_child_resident = child_res,
+    #         number_child_nonresident = child_nonres
+    #     )
+    #     Quotation_ins.save()      
+    #     # package_type_q = HotelRate.objects.get(package_type = package_type,hotel_name = hotel_instance)
+    #     HotelRateInstance = HotelRate.objects.filter(hotel_name = hotel_instance)
+    #     HotelRateInstance = HotelRateInstance.filter(
+    #     package_type = package_type,
+    #     room_type = room_type,
+    #     room_category = room_category,
+    #     ) 
+
+    #     QuotationRoomRequest(
+    #         quotation_id = Quotation_ins,
+    #         package_type = package_type,
+    #         no_of_rooms_for_category_type = no_of_room_category,
+    #         no_of_adults_sharing = no_of_adult_sharing,
+    #         no_of_children_sharing = int(old_child_sharing) + int(young_child_sharing),
+    #         no_of_old_children_sharing = old_child_sharing,
+    #         no_of_young_children_sharing = young_child_sharing
+    #     ).save()
+
+    #     rates = {}
+    #     rates['adult_res'] = False
+    #     rates['adult_nonres'] = False
+    #     rates['child_res'] = False
+    #     rates['child_nonres'] = False
+        
+
+    #     if adult_nonres > 0:
+    #         if HotelRateInstance.filter(traveller_type = "Non-Resident").exists():
+    #             HotelRateInstance = HotelRateInstance.filter(traveller_type = "Non-Resident")
+    #             rates['adult_nonres'] = HotelRateInstance[0].adult_rate * int(adult_nonres)     
+                  
+
+    #     if child_nonres > 0:
+    #         if HotelRateInstance.filter(traveller_type = "Non-Resident").exists():
+    #             HotelRateInstance = HotelRateInstance.filter(traveller_type = "Non-Resident")
+    #             rates['child_nonres'] = HotelRateInstance[0].child_rate * int(child_nonres)
+
+    #     if adult_res > 0:
+    #         if HotelRateInstance.filter(traveller_type = "Resident").exists():
+    #             HotelRateInstance = HotelRateInstance.filter(traveller_type = "Resident")
+    #             rates['adult_res'] = HotelRateInstance[0].adult_rate * int(adult_res)
+
+    #     if child_res > 0:
+    #         if HotelRateInstance.filter(traveller_type = "Resident").exists():
+    #             HotelRateInstance = HotelRateInstance.filter(traveller_type = "Resident")
+    #             rates['child_res'] = HotelRateInstance[0].child_rate * int(child_res)
+
+        
+    #     if int(young_child_sharing) > 0:
+    #         rates['young_child_sharing_rate'] = HotelRateInstance[0].young_child_sharing_rate * int(young_child_sharing)
+    #     else:
+    #         rates['young_child_sharing_rate'] = False
+
+    #     if int(old_child_sharing) > 0:
+    #         rates['old_child_sharing_rate'] = HotelRateInstance[0].old_child_sharing_rate * int(old_child_sharing)
+    #     else:
+    #         rates['old_child_sharing_rate'] = False
+
+
+    #     OpData = {   
+    #         "country":country,
+    #         "hotel_name":hotel_name,
+    #         "area":area,
+    #         "number_adult_resident":adult_res,
+    #         'number_adult_nonresident':adult_nonres,
+    #         "number_child_resident":child_res,
+    #         "number_child_nonresident":child_nonres,
+    #         "total_adult_travellers":adult_res + adult_nonres,
+    #         "total_child_travellers":child_res + child_nonres,
+    #         "total_rooms":no_of_room_category,
+    #         "package_type":package_type,
+    #         "no_of_rooms_for_category_type":no_of_room_category,
+    #         "no_of_adults_sharing":no_of_adult_sharing,
+    #         "no_of_children_sharing":int(old_child_sharing) + int(young_child_sharing),
+    #         "old_child_sharing":old_child_sharing,
+    #         "young_child_sharing":young_child_sharing,
+    #         "adult_nonres":rates['adult_nonres'],
+    #         "child_nonres":rates['child_nonres'],
+    #         "adult_res":rates['adult_res'],
+    #         "child_res":rates['child_res'],
+    #         "old_child_sharing_rate":rates['old_child_sharing_rate'],
+    #         "young_child_sharing_rate":rates['young_child_sharing_rate']
+    #     }
+        
+    #     return JsonResponse(OpData,safe=False)
+
+    main_form = QuotationMainRequestForm()
+    room_formset = QuotationRoomRequestFormSet()
+    hotel_dict = {}
+    hotel_dict['area']= list(Hotel.objects.values_list('area', flat=True).distinct())
+    hotel_dict['country']=list(Hotel.objects.values_list('country', flat=True).distinct())
+    
+    room_dict = {}
+    room_dict['package_type'] = list(HotelRate.objects.values_list('package_type', flat=True).distinct())
+    room_dict['room_category'] = list(HotelRate.objects.values_list('room_category', flat=True).distinct())
+    room_dict['room_type'] = list(HotelRate.objects.values_list('room_type', flat=True).distinct())
+
+    context = {
+        'main_form': main_form,
+        'room_formset': room_formset,
+        'hotels':hotels,
+        "hotel_dict":hotel_dict,
+        "room_dict":room_dict,
+        "available_dates":available_dates,
+        "jsonData":jsonData 
+    }
+
+    return render(request,'home/quotation_form.html',context=context)
+
+
+
+def create_quatation_new22(request):
+    hotel_rates = HotelRate.objects.all()
+    available_dates = []
+
+    for hotelrate in hotel_rates:
+        available_dates.append({
+        "date_applicable_from":str(hotelrate.date_applicable_from),
         "date_applicable_from":str(hotelrate.date_applicable_to)}
         )
-    
+
     hotels = Hotel.objects.all()
+    hotelnamedict = {}
+    for i in hotels:
+        if i.country not in hotelnamedict:
+            hotelnamedict[i.country] = {}
+        if i.area not in hotelnamedict[i.country]:
+            hotelnamedict[i.country][i.area] = []
+        hotelnamedict[i.country][i.area].append((i.hotel_name,i.id))
+    print(hotelnamedict)
+    jsonData = {"country":[]}
+    for country,country_data in hotelnamedict.items():
+        states_data = [{
+            "name" : state,
+            "id" : state,
+            "hotels" : [{"name":hotel,"id":hotel_id} for hotel,hotel_id in state_data]
+        } for state,state_data in country_data.items()]
+        new_country_data = {"name":country,"id":country,"states":states_data}
+        jsonData["country"].append(new_country_data)
+    print(jsonData)
+    # {"Country": { 'statename': ["hotelname"] }}
+
+
     if request.method == "POST":
         country = request.POST.get('country',False)
         area  = request.POST.get('area',False)
@@ -238,6 +563,7 @@ def create_quatation_new(request):
         yound_child_sharing = request.POST.get('yound_child_sharing',0)
 
         hotel_instance = Hotel.objects.get(id = hotel_name)
+        print("hotel_instance", hotel_instance)
         Quotation_ins = QuotationMainRequest(
             hotel_name = hotel_instance,
             country = country,
@@ -249,6 +575,7 @@ def create_quatation_new(request):
 
         )
         Quotation_ins.save()
+        print("Quotation_ins", Quotation_ins)
 
         # package_type_q = HotelRate.objects.get(package_type = package_type,hotel_name = hotel_instance)
         HotelRateInstance = HotelRate.objects.filter(hotel_name = hotel_instance)
@@ -259,7 +586,7 @@ def create_quatation_new(request):
         ) 
         QuotationRoomRequest(
             quotation_id = Quotation_ins,
-            package_type =HotelRate.objects.get(id = HotelRateInstance[0].id),
+            package_type =HotelRate.objects.get(id = 6),
             no_of_rooms_for_category_type = no_of_room_category,
             no_of_adults_sharing = no_of_adult_sharing,
             no_of_children_sharing = int(old_child_sharing) + int(yound_child_sharing),
@@ -297,7 +624,7 @@ def create_quatation_new(request):
     hotel_dict = {}
     hotel_dict['area']= list(Hotel.objects.values_list('area', flat=True).distinct())
     hotel_dict['country']=list(Hotel.objects.values_list('country', flat=True).distinct())
-    
+    print("hotel_dict", hotel_dict)
     room_dict = {}
     room_dict['package_type'] = list(HotelRate.objects.values_list('package_type', flat=True).distinct())
     room_dict['room_category'] = list(HotelRate.objects.values_list('room_category', flat=True).distinct())
@@ -309,10 +636,12 @@ def create_quatation_new(request):
         'hotels':hotels,
         "hotel_dict":hotel_dict,
         "room_dict":room_dict,
-        "available_dates":available_dates
+        "available_dates":available_dates,
+        "jsonData":jsonData
     }
 
-    return render(request,'home/quotation_form.html',context=context)
+    return render(request,'home/quotation_form1.html',context=context)
+
 
 
 # THESE COULD BE USED WITH POSTGRESSQL

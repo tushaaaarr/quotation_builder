@@ -36,6 +36,8 @@ urlpatterns = [
     # quotation things
     path('create_quotation/', views.create_quotation, name='create_quotation'),
     path('create-quotation/', views.create_quatation_new, name='create_quotation_copy'),
+    path('get_form_data/', views.get_form_data, name='get_form_data'),
+    path('create_quatation_new22/', views.create_quatation_new22, name='create_quatation_new22'),
 
 
 
