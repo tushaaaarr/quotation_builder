@@ -4,8 +4,19 @@ from django.utils import timezone
 from uuid import uuid4  
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
-
 from quotationBuilder.custom.mixins_models import  TimeStampMixin
+
+
+class UserType(models.Model):
+    is_hotel_staff = models.BooleanField(default=False)
+    is_company_staff = models.BooleanField(default=False)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    def __str__(self):
+        if self.is_company_staff == True:
+            return "Company staff--" + str(' ') +  str(self.user)
+        elif self.is_hotel_staff == True:
+            return "Hotel staff--" + str(' ') + str(self.user)
+
 
 
 # Create your models here.
