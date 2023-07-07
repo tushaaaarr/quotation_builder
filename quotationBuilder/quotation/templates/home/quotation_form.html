@@ -5,7 +5,8 @@
   #mod_date {
     color: red !important;
   }
-  #err {
+  #err,
+  #chkdates {
     display: none;
   }
 </style>
@@ -74,7 +75,13 @@
               <div class="form-group">
                 <label for="date_frm">Date From</label>
 
-                <input type="date" id="date_frm" name="date_frm" class="form-control" />
+                <input
+                  type="date"
+                  id="date_frm"
+                  name="date_frm"
+                  class="form-control"
+                  onchange="checkDateRange()"
+                />
                 <!-- <select
                   class="form-select form-control"
                   aria-label="date_frm"
@@ -92,7 +99,13 @@
             <div class="col-6">
               <div class="form-group">
                 <label for="date_to">Date To</label>
-                <input type="date" id="date_to" name="date_to" class="form-control" />
+                <input
+                  type="date"
+                  id="date_to"
+                  name="date_to"
+                  class="form-control"
+                  onchange="checkDateRange()"
+                />
                 <!-- <select
                   class="form-select form-control"
                   aria-label="date_to"
@@ -106,6 +119,11 @@
                   {%endfor%}
                 </select> -->
               </div>
+            </div>
+            <div class="col-12">
+              <p class="bg-warning text-dark px-3 rounded" id="chkdates">
+                Selected Dates are not Available
+              </p>
             </div>
 
             <div class="col-6">
@@ -395,7 +413,7 @@
               />
             </div>
 
-            <table class="table table-striped" id="datatable">
+            <table class="table table-striped">
               <thead class="bg-info text-light">
                 <tr>
                   <th scope="col">Quantity</th>
@@ -404,8 +422,8 @@
                   <th scope="col">USD</th>
                 </tr>
               </thead>
-              <tbody>
-                <tr>
+              <tbody id="datatable">
+                <!-- <tr>
                   <th scope="row" id="row1">1</th>
                   <td id="row1col1"></td>
                   <td id="row1col2"></td>
@@ -417,7 +435,7 @@
                   <td id="row2col2"></td>
                   <td id="row2col2"></td>
                 </tr>
-                <tr></tr>
+                <tr></tr> -->
               </tbody>
             </table>
 
@@ -461,230 +479,289 @@
 
 <!-- Add Room -->
 <script>
-  var roomData = [];
 
-  var trooms = 0;
-  function addRoom() {
-    roomData = [];
-    trooms += 1;
-    // Get the container element for the room requests
-    var roomContainer = document.getElementById("roomContainer");
+    console.log()
 
-    // Create a new div element for the room request
-    var roomDiv = document.createElement("div");
-    roomDiv.className = "room-request";
+  // Checking dates Availabilty Start=====>
 
-    // Clone the first room request div to create a new set of input fields
-    var clonedRoomRequest = document.querySelector(".room-request:first-child").cloneNode(true);
+    let dateArray= {{ available_dates|safe}}
 
-    // Clear the values of the cloned input fields
-    var clonedInputs = clonedRoomRequest.querySelectorAll("input, select");
-    clonedInputs.forEach(function (input) {
-      input.value = "";
-      var inputId = input.getAttribute("id");
-      var inputName = input.getAttribute("name");
-      // Append a number to the id and name attributes
-      input.setAttribute("id", inputId + roomContainer.childElementCount);
-      input.setAttribute("name", inputName + roomContainer.childElementCount);
-    });
+    // console.log(dateArray)
 
-    var clonedLabels = clonedRoomRequest.querySelectorAll("label");
-    clonedLabels.forEach(function (label) {
-      var labelFor = label.getAttribute("for");
-      // Append a number to the for attribute
-      label.setAttribute("for", labelFor + roomContainer.childElementCount);
-    });
+    function checkDateRange() {
+        const fromDate = document.getElementById("date_frm").value;
+        const toDate = document.getElementById("date_to").value;
 
-    // Append the cloned room request to the new div
-    roomDiv.appendChild(clonedRoomRequest);
 
-    // Append the new room div to the container
-    roomContainer.appendChild(roomDiv);
-    var room = {};
-    for (x = 0; x <= trooms; x++) {
-      let incount = x == 0 ? "" : x;
+        // Compare the selected date range with each array element
+        for (let i = 0; i < dateArray.length; i++) {
+          const item = dateArray[i];
+          const from = item.date_applicable_from;
+          const to = item.date_applicable_to;
 
-      room = {
-        package_type: document.querySelector(`#package_type${incount}`).value,
-        room_category: document.querySelector(`#room_category${incount}`).value,
-        room_type: document.querySelector(`#room_type${incount}`).value,
-        number_of_room_category: document.querySelector(`#number_of_room_category${incount}`).value,
-        Adult_count: document.querySelector(`#Adult_count${incount}`).value,
-        child_count: document.querySelector(`#child_count${incount}`).value,
-        old_child_sharing: document.querySelector(`#old_child_sharing${incount}`).value,
-        young_child_sharing: document.querySelector(`#young_child_sharing${incount}`).value,
-        // Add other room data fields here
-      };
+          if (fromDate >= from   && toDate <= to  ) {
 
-      if (roomData.length < trooms + 1) {
-        roomData = [...roomData, room];
-      }
-    }
-    console.log(roomData);
-    // Add the room data to the roomData array
-  }
+            console.log("Date range matches array element:", item);
+            document.getElementById("chkdates").style.display="none";
+            return
+            break
+          }
+          else{
 
-  // Attach the addRoom function to the "Add Room" button's click event
-  var addButton = document.querySelector("#addRoombtn");
-  addButton.addEventListener("click", addRoom);
-
-  // Add Room Finish
-
-  function handlesubmit(e) {
-    e.preventDefault();
-
-    roomData = [];
-    var room = {};
-    for (x = 0; x <= trooms; x++) {
-      let incount = x == 0 ? "" : x;
-
-      room = {
-        package_type: document.querySelector(`#package_type${incount}`).value,
-        room_category: document.querySelector(`#room_category${incount}`).value,
-        room_type: document.querySelector(`#room_type${incount}`).value,
-        number_of_room_category: document.querySelector(`#number_of_room_category${incount}`).value,
-        Adult_count: document.querySelector(`#Adult_count${incount}`).value,
-        child_count: document.querySelector(`#child_count${incount}`).value,
-        old_child_sharing: document.querySelector(`#old_child_sharing${incount}`).value,
-        young_child_sharing: document.querySelector(`#young_child_sharing${incount}`).value,
-        // Add other room data fields here
-      };
-
-      if (roomData.length < trooms + 1) {
-        roomData = [...roomData, room];
-      }
-    }
-
-    const FD = new FormData();
-    let formData = new FormData(document.getElementById("quote")); //formdata object
-
-    for (const [name, value] of formData.entries()) {
-      if (
-        !name.includes("Adult_count") &&
-        !name.includes("child_count") &&
-        !name.includes("number_of_room_category") &&
-        !name.includes("old_child_sharing") &&
-        !name.includes("package_type") &&
-        !name.includes("room_category") &&
-        !name.includes("room_type") &&
-        !name.includes("young_child_sharing")
-      ) {
-        FD.append(name, value);
-      }
-    }
-
-    // FD.append('age', 20);
-    const config = {
-      headers: { "content-type": "multipart/form-data" },
-    };
-
-    let formDataJson = {};
-    for (let [key, value] of FD.entries()) {
-      formDataJson[key] = value;
-    }
-
-    formDataJson = { ...formDataJson, roomData };
-    // Print the JSON string
-    console.log(formDataJson);
-    console.log(formDataJson.hotel_name);
-
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function () {
-      if (this.readyState == 4 && this.status == 200) {
-        console.log(this.responseText);
-        let fdata = JSON.parse(this.responseText);
-        console.log(fdata);
-        let tdate = new Date();
-        document.getElementById("mod_company").innerHTML = fdata.hotel_name;
-        document.getElementById("mod_address").innerHTML = fdata.state + "," + fdata.country;
-        document.getElementById("mod_date").innerHTML = tdate.toLocaleDateString();
-        document.getElementById("mod_fromdt").innerHTML = fdata.date_frm;
-        document.getElementById("mod_todt").innerHTML = fdata.date_to;
-        document.getElementById("mod_travAdult").innerHTML = fdata.total_adult_travellers;
-        document.getElementById("mod_travChild").innerHTML = fdata.total_child_travellers;
-        document.getElementById("mod_totalRoom").innerHTML = fdata.total_rooms;
-        document.getElementById("row1col1").innerHTML =
-          fdata.hotel_name + ", " + fdata.package_type;
-        document.getElementById("row1col3").innerHTML = fdata.adult_res + fdata.adult_res;
-
-        // Row 2
-
-        document.getElementById("row2col1").innerHTML =
-          fdata.hotel_name + ", " + fdata.package_type;
-        document.getElementById("row2col2").innerHTML = fdata.adult_res + fdata.adult_res;
-      }
-
-      // else{
-      //   document.getElementById("err").style.display="block"
-      // }
-    };
-    xhttp.open("POST", "http://127.0.0.1:8000/get_form_data/");
-    xhttp.send(JSON.stringify(formDataJson));
-  }
-
-  function downloadModalData() {
-    // Create a new jsPDF instance
-    var doc = new jsPDF();
-
-    // Get the modal content
-    var modalContent = document.getElementById("exampleModalCenter");
-
-    // Get the modal title and address
-    var companyName = modalContent.querySelector("#mod_company");
-    var address = modalContent.querySelector("#mod_address");
-    var mehad = modalContent.querySelector("#mhead");
-
-    // Get the date and trip summary details
-    var date = modalContent.querySelector("#mod_date").innerText;
-    var modid = modalContent.querySelector("#mod_id").innerText;
-    var fromDate = modalContent.querySelector("#mod_fromdt").innerText;
-    var toDate = modalContent.querySelector("#mod_todt").innerText;
-    var adultTravellers = modalContent.querySelector("#mod_travAdult").innerText;
-    var childTravellers = modalContent.querySelector("#mod_travChild").innerText;
-    var totalRooms = modalContent.querySelector("#mod_totalRoom").innerText;
-
-    // Set the document content
-    doc.setFontSize(12);
-    doc.fromHTML(companyName, 15, 30);
-    doc.fromHTML(address, 15, 40);
-    doc.fromHTML("Date: " + date, 15, 50);
-    doc.fromHTML(mehad, 80, 70);
-    doc.fromHTML("Date: " + fromDate + " To " + toDate, 15, 80);
-    doc.fromHTML("Total Adult travellers: " + adultTravellers, 15, 90);
-    doc.fromHTML("Total Child travellers: " + childTravellers, 15, 100);
-    doc.fromHTML("Total Rooms: " + totalRooms, 15, 110);
-    var imgData =
-      "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"; // Replace with the path to your image
-    doc.addImage(imgData, "JPEG", 60, 120, 70, 70);
-
-    // Get the table data
-    var table = modalContent.querySelector("table");
-    var contra = modalContent.querySelector("#contract");
-
-    // Generate the table using autoTable plugin
-    var options = {
-      startY: 180, // Set the initial y-position for the table
-      margin: { top: 10 },
-      didDrawPage: function (data) {
-        // Add new page if the table exceeds the page height
-        if (data.startY + data.table.height > data.page.height) {
-          doc.addPage();
+            document.getElementById("chkdates").style.display="block";
+           console.log("dates not avail")
+          }
         }
-      },
-    };
 
-    doc.autoTable({
-      html: table,
-      startY: options.startY,
-      margin: options.margin,
-    });
-    doc.autoTable({ html: contra, startY: doc.autoTable.previous.finalY + 10 });
+      }
+  // Checking dates Availabilty End=====>
 
-    // Save the document
-    doc.save("modal_data.pdf");
-  }
-  var downloadButton = document.querySelector("#exampleModalCenter .modal-footer .btn-primary");
-  downloadButton.addEventListener("click", downloadModalData);
+
+      var roomData = [];
+      var trooms = 0;
+      function addRoom() {
+        roomData = [];
+        trooms += 1;
+        // Get the container element for the room requests
+        var roomContainer = document.getElementById("roomContainer");
+
+        // Create a new div element for the room request
+        var roomDiv = document.createElement("div");
+        roomDiv.className = "room-request";
+
+        // Clone the first room request div to create a new set of input fields
+        var clonedRoomRequest = document.querySelector(".room-request:first-child").cloneNode(true);
+
+        // Clear the values of the cloned input fields
+        var clonedInputs = clonedRoomRequest.querySelectorAll("input, select");
+        clonedInputs.forEach(function (input) {
+          input.value = "";
+          var inputId = input.getAttribute("id");
+          var inputName = input.getAttribute("name");
+          // Append a number to the id and name attributes
+          input.setAttribute("id", inputId + roomContainer.childElementCount);
+          input.setAttribute("name", inputName + roomContainer.childElementCount);
+        });
+
+        var clonedLabels = clonedRoomRequest.querySelectorAll("label");
+        clonedLabels.forEach(function (label) {
+          var labelFor = label.getAttribute("for");
+          // Append a number to the for attribute
+          label.setAttribute("for", labelFor + roomContainer.childElementCount);
+        });
+
+        // Append the cloned room request to the new div
+        roomDiv.appendChild(clonedRoomRequest);
+
+        // Append the new room div to the container
+        roomContainer.appendChild(roomDiv);
+        var room = {};
+        for (x = 0; x <= trooms; x++) {
+          let incount = x == 0 ? "" : x;
+
+          room = {
+            package_type: document.querySelector(`#package_type${incount}`).value,
+            room_category: document.querySelector(`#room_category${incount}`).value,
+            room_type: document.querySelector(`#room_type${incount}`).value,
+            number_of_room_category: document.querySelector(`#number_of_room_category${incount}`).value,
+            Adult_count: document.querySelector(`#Adult_count${incount}`).value,
+            child_count: document.querySelector(`#child_count${incount}`).value,
+            old_child_sharing: document.querySelector(`#old_child_sharing${incount}`).value,
+            young_child_sharing: document.querySelector(`#young_child_sharing${incount}`).value,
+            // Add other room data fields here
+          };
+
+          if (roomData.length < trooms + 1) {
+            roomData = [...roomData, room];
+          }
+        }
+        console.log(roomData);
+        // Add the room data to the roomData array
+      }
+
+      // Attach the addRoom function to the "Add Room" button's click event
+      var addButton = document.querySelector("#addRoombtn");
+      addButton.addEventListener("click", addRoom);
+
+      // Add Room Finish
+
+      function handlesubmit(e) {
+        e.preventDefault();
+
+        roomData = [];
+        var room = {};
+        for (x = 0; x <= trooms; x++) {
+          let incount = x == 0 ? "" : x;
+
+          room = {
+            package_type: document.querySelector(`#package_type${incount}`).value,
+            room_category: document.querySelector(`#room_category${incount}`).value,
+            room_type: document.querySelector(`#room_type${incount}`).value,
+            number_of_room_category: document.querySelector(`#number_of_room_category${incount}`).value,
+            Adult_count: document.querySelector(`#Adult_count${incount}`).value,
+            child_count: document.querySelector(`#child_count${incount}`).value,
+            old_child_sharing: document.querySelector(`#old_child_sharing${incount}`).value,
+            young_child_sharing: document.querySelector(`#young_child_sharing${incount}`).value,
+            // Add other room data fields here
+          };
+
+          if (roomData.length < trooms + 1) {
+            roomData = [...roomData, room];
+          }
+        }
+
+        const FD = new FormData();
+        let formData = new FormData(document.getElementById("quote")); //formdata object
+
+        for (const [name, value] of formData.entries()) {
+          if (
+            !name.includes("Adult_count") &&
+            !name.includes("child_count") &&
+            !name.includes("number_of_room_category") &&
+            !name.includes("old_child_sharing") &&
+            !name.includes("package_type") &&
+            !name.includes("room_category") &&
+            !name.includes("room_type") &&
+            !name.includes("young_child_sharing")
+          ) {
+            FD.append(name, value);
+          }
+        }
+
+        // FD.append('age', 20);
+        const config = {
+          headers: { "content-type": "multipart/form-data" },
+        };
+
+        let formDataJson = {};
+        for (let [key, value] of FD.entries()) {
+          formDataJson[key] = value;
+        }
+
+        formDataJson = { ...formDataJson, roomData };
+        // Print the JSON string
+        console.log(formDataJson);
+        console.log(formDataJson.hotel_name);
+        let totalRooms = 0;
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+          if (this.readyState == 4 && this.status == 200) {
+            console.log(this.responseText);
+            let fdata = JSON.parse(this.responseText);
+            console.log(fdata);
+            let tdate = new Date();
+            document.getElementById("mod_company").innerHTML = fdata.hotel_name;
+            document.getElementById("mod_address").innerHTML = fdata.state + "," + fdata.country;
+            document.getElementById("mod_date").innerHTML = tdate.toLocaleDateString();
+            document.getElementById("mod_fromdt").innerHTML = fdata.date_frm;
+            document.getElementById("mod_todt").innerHTML = fdata.date_to;
+            document.getElementById("mod_travAdult").innerHTML = fdata.total_adult_travellers;
+            document.getElementById("mod_travChild").innerHTML = fdata.total_child_travellers;
+            fdata.roomData.map((ini) => {
+              totalRooms += ini.total_rooms;
+            });
+            // document.getElementById("mod_totalRoom").innerHTML = totalRooms;
+            // document.getElementById("row1col1").innerHTML =
+            //   fdata.hotel_name + ", " + fdata.package_type;
+            // document.getElementById("row1col3").innerHTML = fdata.adult_res ;
+
+            // // Row 2
+
+            // document.getElementById("row2col1").innerHTML =
+            //   fdata.hotel_name + ", " + fdata.package_type;
+            // document.getElementById("row2col2").innerHTML = fdata.adult_res + fdata.adult_res;
+
+            fdata.roomData.map((ini) => {
+              let tr = document.createElement("tr");
+              let td1 = document.createElement("td");
+              td1.innerHTML = ini.total_rooms;
+              let td2 = document.createElement("td");
+              td2.innerHTML = fdata.hotel_name + ", " + ini.package_type + ", " + ini.room_category;
+              let td3 = document.createElement("td");
+              td3.innerHTML = fdata.adult_res;
+              let td4 = document.createElement("td");
+              td4.innerHTML = fdata.adult_res;
+
+              tr.appendChild(td1);
+              tr.appendChild(td2);
+              tr.appendChild(td3);
+              tr.appendChild(td4);
+
+              document.getElementById("datatable").appendChild(tr);
+            });
+          }
+
+          // else{
+          //   document.getElementById("err").style.display="block"
+          // }
+        };
+        xhttp.open("POST", "http://127.0.0.1:8000/get_form_data/");
+        xhttp.send(JSON.stringify(formDataJson));
+      }
+
+      function downloadModalData() {
+        // Create a new jsPDF instance
+        var doc = new jsPDF();
+
+        // Get the modal content
+        var modalContent = document.getElementById("exampleModalCenter");
+
+        // Get the modal title and address
+        var companyName = modalContent.querySelector("#mod_company");
+        var address = modalContent.querySelector("#mod_address");
+        var mehad = modalContent.querySelector("#mhead");
+
+        // Get the date and trip summary details
+        var date = modalContent.querySelector("#mod_date").innerText;
+        var modid = modalContent.querySelector("#mod_id").innerText;
+        var fromDate = modalContent.querySelector("#mod_fromdt").innerText;
+        var toDate = modalContent.querySelector("#mod_todt").innerText;
+        var adultTravellers = modalContent.querySelector("#mod_travAdult").innerText;
+        var childTravellers = modalContent.querySelector("#mod_travChild").innerText;
+        var totalRooms = modalContent.querySelector("#mod_totalRoom").innerText;
+
+        // Set the document content
+        doc.setFontSize(12);
+        doc.fromHTML(companyName, 15, 30);
+        doc.fromHTML(address, 15, 40);
+        doc.fromHTML("Date: " + date, 15, 50);
+        doc.fromHTML(mehad, 80, 70);
+        doc.fromHTML("Date: " + fromDate + " To " + toDate, 15, 80);
+        doc.fromHTML("Total Adult travellers: " + adultTravellers, 15, 90);
+        doc.fromHTML("Total Child travellers: " + childTravellers, 15, 100);
+        doc.fromHTML("Total Rooms: " + totalRooms, 15, 110);
+        var imgData =
+          "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"; // Replace with the path to your image
+        doc.addImage(imgData, "JPEG", 60, 120, 70, 70);
+
+        // Get the table data
+        var table = modalContent.querySelector("table");
+        var contra = modalContent.querySelector("#contract");
+
+        // Generate the table using autoTable plugin
+        var options = {
+          startY: 180, // Set the initial y-position for the table
+          margin: { top: 10 },
+          didDrawPage: function (data) {
+            // Add new page if the table exceeds the page height
+            if (data.startY + data.table.height > data.page.height) {
+              doc.addPage();
+            }
+          },
+        };
+
+        doc.autoTable({
+          html: table,
+          startY: options.startY,
+          margin: options.margin,
+        });
+        doc.autoTable({ html: contra, startY: doc.autoTable.previous.finalY + 10 });
+
+        // Save the document
+        doc.save("modal_data.pdf");
+      }
+      var downloadButton = document.querySelector("#exampleModalCenter .modal-footer .btn-primary");
+      downloadButton.addEventListener("click", downloadModalData);
 </script>
 
 <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>

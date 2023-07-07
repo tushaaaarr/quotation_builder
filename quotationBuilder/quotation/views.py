@@ -5,13 +5,10 @@ from django.shortcuts import render, redirect, get_object_or_404, HttpResponseRe
 from django.contrib import messages
 from django.conf import settings
 from django.http import JsonResponse
-
-
 from quotationBuilder.custom.mixins_views import StatusFieldMixin
 from .forms import *
 from .models import *
 from django.forms import modelformset_factory
-
 
 from django.contrib.auth.models import User, auth
 from random import randint
@@ -28,6 +25,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework import generics
 from django.contrib.auth.models import User
+import json
 
 
 class MyObtainTokenPairView(TokenObtainPairView):
@@ -40,7 +38,6 @@ class RegisterView(generics.CreateAPIView):
     permission_classes = (AllowAny,)
     serializer_class = RegisterSerializer
 
-
 # Create your views here.
 @login_required
 def dashboard(request):
@@ -50,7 +47,6 @@ def dashboard(request):
 
 # Anonymous required
 def anonymous_required(function=None, redirect_url=None):
-
     if not redirect_url:
         redirect_url = 'dashboard'
 
@@ -66,7 +62,6 @@ def anonymous_required(function=None, redirect_url=None):
 
 def home(request):
     return render(request, 'quotation/index.html')
-
 
 @anonymous_required
 def login(request):
@@ -211,12 +206,14 @@ def update_hotel_rate(request, pk):
         form = HotelRateUpdateForm(instance=hotel_rate)
     return render(request, 'quotation/update_hotel_rate.html', {'form': form, 'hotel_rate': hotel_rate})
 
+
 def is_company_staff(request,user):
     if request.user.is_authenticated:
         if UserType.objects.filter(user=user).exists():
             if UserType.objects.get(user = user).is_company_staff:
                 return True
     return False
+
 
 @csrf_exempt
 def get_form_data(request):
@@ -287,7 +284,6 @@ def get_form_data(request):
                     "room_category":room['room_category'],
                     "room_type":room['room_type'],
                     "package_type":room['package_type'],
-                    "total_rooms":total_rooms,
                     "package_type":room['package_type'],
                     "no_of_rooms_for_category_type":room['number_of_room_category'],
                     "no_of_children_sharing":int(room['old_child_sharing']) + int(room['young_child_sharing']),
@@ -339,13 +335,11 @@ def get_form_data(request):
             'date_frm':post_data['date_frm'],
             'date_to':post_data['date_to'],
             'roomData':roomData,
+            "total_rooms":total_rooms,
         }
         
-        print(OpData)
-
         return JsonResponse(OpData,safe=False)
 
-import json
 @csrf_exempt
 def create_quatation_new(request):
     if is_company_staff(request,request.user):
@@ -403,7 +397,6 @@ def create_quatation_new(request):
 # THESE COULD BE USED WITH POSTGRESSQL
 def create_quotation(request):
     if request.method == 'POST':
-        print('we are here.')
         main_form = QuotationMainRequestForm(request.POST)
         room_formset = QuotationRoomRequestFormSet(request.POST)
         if main_form.is_valid() and room_formset.is_valid():
