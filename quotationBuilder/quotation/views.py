@@ -337,7 +337,7 @@ def get_form_data(request):
             'roomData':roomData,
             "total_rooms":total_rooms,
         }
-        
+        print(OpData)
         return JsonResponse(OpData,safe=False)
 
 @csrf_exempt
@@ -379,6 +379,7 @@ def create_quatation_new(request):
         room_dict['package_type'] = list(HotelRate.objects.values_list('package_type', flat=True).distinct())
         room_dict['room_category'] = list(HotelRate.objects.values_list('room_category', flat=True).distinct())
         room_dict['room_type'] = list(HotelRate.objects.values_list('room_type', flat=True).distinct())
+        print(jsonData)
 
         context = {
             'main_form': main_form,
