@@ -60,16 +60,19 @@ def anonymous_required(function=None, redirect_url=None):
     return actual_decorator
 
 
+@login_required
 def home(request):
-    return render(request, 'quotation/index.html')
+    return redirect('/create-quotation')
+    return render(request,'home/quotation_form.html')
 
-@anonymous_required
+# @anonymous_required
 def login(request):
     context = {}
+    page_data ={}
     if request.method == 'GET':
         form = UserLoginForm()
         context['form'] = form
-        return render(request, 'quotation/login.html', context)
+        return render(request, 'auth/login.html', context)
         # return redirect('dashboard')
 
     if request.method == 'POST':
@@ -79,13 +82,12 @@ def login(request):
         password = request.POST['password']
 
         user = auth.authenticate(username=username, password=password)
-        print(user)
-        if username is not None:
+        if user is not None:
             auth.login(request, user)
-
-            return redirect('dashboard')
+            return redirect('/')
         else:
             context['form'] = form
+            context['error'] = "Invalid Credentials"
             messages.error(request, 'Invalid Credentials')
             return redirect('login')
 
@@ -97,7 +99,6 @@ def logout(request):
     auth.logout(request)
     return redirect('login')
     
-
 
 @login_required
 @user_passes_test(lambda u: u.employee.hotel_staff == True, login_url='login')
@@ -337,9 +338,9 @@ def get_form_data(request):
             'roomData':roomData,
             "total_rooms":total_rooms,
         }
-        print(OpData)
         return JsonResponse(OpData,safe=False)
 
+@login_required
 @csrf_exempt
 def create_quatation_new(request):
     if is_company_staff(request,request.user):
@@ -379,8 +380,6 @@ def create_quatation_new(request):
         room_dict['package_type'] = list(HotelRate.objects.values_list('package_type', flat=True).distinct())
         room_dict['room_category'] = list(HotelRate.objects.values_list('room_category', flat=True).distinct())
         room_dict['room_type'] = list(HotelRate.objects.values_list('room_type', flat=True).distinct())
-        print(jsonData)
-
         context = {
             'main_form': main_form,
             'room_formset': room_formset,
@@ -394,6 +393,7 @@ def create_quatation_new(request):
         return render(request,'home/quotation_form.html',context=context)
 
     return HttpResponse('You have not access for this page')
+
 
 # THESE COULD BE USED WITH POSTGRESSQL
 def create_quotation(request):

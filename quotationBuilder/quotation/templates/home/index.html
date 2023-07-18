@@ -68,27 +68,57 @@
 
       <!-- Divider -->
       <hr class="sidebar-divider my-0" />
-
       <!-- Nav Item - Dashboard -->
       <li class="nav-item active">
-        <a class="nav-link" href="/dashboard/malt">
+        <a class="nav-link" href="{% url 'login' %}">
           <i class="fas fa-fw fa-tachometer-alt"></i>
-          <span>Malt</span></a>
+          <span>Login</span></a>
       </li>
       <li class="nav-item active">
-        <a class="nav-link" href="/dashboard/hops">
+        <a class="nav-link" href="/hotel/list">
           <i class="fas fa-fw fa-tachometer-alt"></i>
-          <span>Hops</span></a>
+          <span>Hotels</span></a>
       </li>
       <li class="nav-item active">
-        <a class="nav-link" href="/dashboard/yeast">
+        <a class="nav-link" href="/hotelrate/list">
           <i class="fas fa-fw fa-tachometer-alt"></i>
-          <span>Yeast</span></a>
+          <span>Hotel Rates</span></a>
       </li>
-
+      <li class="nav-item active">
+        <a class="nav-link" href="/company/list">
+          <i class="fas fa-fw fa-tachometer-alt"></i>
+          <span>Companies</span></a>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link" href="/hotel/add">
+          <i class="fas fa-fw fa-tachometer-alt"></i>
+          <span>Add Hotel</span></a>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link" href="/hotelrate/add">
+          <i class="fas fa-fw fa-tachometer-alt"></i>
+          <span>Add HotelRate</span></a>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link" href="/company/add">
+          <i class="fas fa-fw fa-tachometer-alt"></i>
+          <span>Add Company</span></a>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link" href="/create-quotation">
+          <i class="fas fa-fw fa-tachometer-alt"></i>
+          <span>Create Quotation</span></a>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link" href="{% url 'logout' %}">
+          <i class="fas fa-fw fa-tachometer-alt"></i>
+          <span>logout</span></a>
+      </li>
+  
       <!-- Divider -->
       <hr class="sidebar-divider d-none d-md-block" />
     </ul>
+    
     <!-- End of Sidebar -->
 
     <!-- Content Wrapper -->
