@@ -3,18 +3,11 @@
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <meta name="description" content="" />
     <meta name="author" content="" />
     <title>Dashboard</title>
-    <link
-      href="vendor/fontawesome-free/css/all.min.css"
-      rel="stylesheet"
-      type="text/css"
-    />
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css" />
     <link
       href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
       rel="stylesheet"
@@ -29,10 +22,7 @@
         id="accordionSidebar"
       >
         <!-- Sidebar - Brand -->
-        <a
-          class="sidebar-brand d-flex align-items-center justify-content-center"
-          href="/"
-        >
+        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/">
           <div class="sidebar-brand-icon rotate-n-15">
             <i class="fas fa-laugh-wink"></i>
           </div>
@@ -101,398 +91,391 @@
         <hr class="sidebar-divider d-none d-md-block" />
       </ul>
 
-      {%block body%} 
-      
-      
-      {%endblock body%}
-    
-    
+      {%block body%} {%endblock body%}
     </div>
 
+    <!-- Form Submmission Handling -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.2.3/jspdf.plugin.autotable.min.js"></script>
+
+    <!-- Add Room -->
+    <script>
+
+          console.log()
+
+        // Checking dates Availabilty Start=====>
+
+          let dateArray= {{ available_dates|safe}}
+
+          // console.log(dateArray)
+
+          function checkDateRange() {
+              const fromDate = document.getElementById("date_frm").value;
+              const toDate = document.getElementById("date_to").value;
 
 
-<!-- Form Submmission Handling -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.2.3/jspdf.plugin.autotable.min.js"></script>
+              // Compare the selected date range with each array element
+              for (let i = 0; i < dateArray.length; i++) {
+                const item = dateArray[i];
+                const from = item.date_applicable_from;
+                const to = item.date_applicable_to;
 
-<!-- Add Room -->
-<script>
+                if (fromDate >= from   && toDate <= to  ) {
 
-      console.log()
+                  console.log("Date range matches array element:", item);
+                  document.getElementById("chkdates").style.display="none";
+                  return
+                  break
+                }
+                else{
 
-    // Checking dates Availabilty Start=====>
-
-      let dateArray= {{ available_dates|safe}}
-
-      // console.log(dateArray)
-
-      function checkDateRange() {
-          const fromDate = document.getElementById("date_frm").value;
-          const toDate = document.getElementById("date_to").value;
-
-
-          // Compare the selected date range with each array element
-          for (let i = 0; i < dateArray.length; i++) {
-            const item = dateArray[i];
-            const from = item.date_applicable_from;
-            const to = item.date_applicable_to;
-
-            if (fromDate >= from   && toDate <= to  ) {
-
-              console.log("Date range matches array element:", item);
-              document.getElementById("chkdates").style.display="none";
-              return
-              break
-            }
-            else{
-
-              document.getElementById("chkdates").style.display="block";
-             console.log("dates not avail")
-            }
-          }
-
-        }
-    // Checking dates Availabilty End=====>
-
-
-        var roomData = [];
-        var trooms = 0;
-        function addRoom() {
-          roomData = [];
-          trooms += 1;
-          // Get the container element for the room requests
-          var roomContainer = document.getElementById("roomContainer");
-
-          // Create a new div element for the room request
-          var roomDiv = document.createElement("div");
-          roomDiv.className = "room-request";
-
-          // Clone the first room request div to create a new set of input fields
-          var clonedRoomRequest = document.querySelector(".room-request:first-child").cloneNode(true);
-
-          // Clear the values of the cloned input fields
-          var clonedInputs = clonedRoomRequest.querySelectorAll("input, select");
-          clonedInputs.forEach(function (input) {
-            input.value = "";
-            var inputId = input.getAttribute("id");
-            var inputName = input.getAttribute("name");
-            // Append a number to the id and name attributes
-            input.setAttribute("id", inputId + roomContainer.childElementCount);
-            input.setAttribute("name", inputName + roomContainer.childElementCount);
-          });
-
-          var clonedLabels = clonedRoomRequest.querySelectorAll("label");
-          clonedLabels.forEach(function (label) {
-            var labelFor = label.getAttribute("for");
-            // Append a number to the for attribute
-            label.setAttribute("for", labelFor + roomContainer.childElementCount);
-          });
-
-          // Append the cloned room request to the new div
-          roomDiv.appendChild(clonedRoomRequest);
-
-          // Append the new room div to the container
-          roomContainer.appendChild(roomDiv);
-          var room = {};
-          for (x = 0; x <= trooms; x++) {
-            let incount = x == 0 ? "" : x;
-
-            room = {
-              package_type: document.querySelector(`#package_type${incount}`).value,
-              room_category: document.querySelector(`#room_category${incount}`).value,
-              room_type: document.querySelector(`#room_type${incount}`).value,
-              number_of_room_category: document.querySelector(`#number_of_room_category${incount}`).value,
-              Adult_count: document.querySelector(`#Adult_count${incount}`).value,
-              child_count: document.querySelector(`#child_count${incount}`).value,
-              old_child_sharing: document.querySelector(`#old_child_sharing${incount}`).value,
-              young_child_sharing: document.querySelector(`#young_child_sharing${incount}`).value,
-              // Add other room data fields here
-            };
-
-            if (roomData.length < trooms + 1) {
-              roomData = [...roomData, room];
-            }
-          }
-          console.log(roomData);
-          // Add the room data to the roomData array
-        }
-
-        // Attach the addRoom function to the "Add Room" button's click event
-        var addButton = document.querySelector("#addRoombtn");
-        addButton.addEventListener("click", addRoom);
-
-        // Add Room Finish
-
-        function handlesubmit(e) {
-          e.preventDefault();
-          console.log("here")
-          document.getElementById('loader-form').style.display="block";
-
-          roomData = [];
-          var room = {};
-          for (x = 0; x <= trooms; x++) {
-            let incount = x == 0 ? "" : x;
-
-            room = {
-              package_type: document.querySelector(`#package_type${incount}`).value,
-              room_category: document.querySelector(`#room_category${incount}`).value,
-              room_type: document.querySelector(`#room_type${incount}`).value,
-              number_of_room_category: document.querySelector(`#number_of_room_category${incount}`).value,
-              Adult_count: document.querySelector(`#Adult_count${incount}`).value,
-              child_count: document.querySelector(`#child_count${incount}`).value,
-              old_child_sharing: document.querySelector(`#old_child_sharing${incount}`).value,
-              young_child_sharing: document.querySelector(`#young_child_sharing${incount}`).value,
-              // Add other room data fields here
-            };
-
-            if (roomData.length < trooms + 1) {
-              roomData = [...roomData, room];
-            }
-          }
-
-          const FD = new FormData();
-          let formData = new FormData(document.getElementById("quote")); //formdata object
-
-          for (const [name, value] of formData.entries()) {
-            if (
-              !name.includes("Adult_count") &&
-              !name.includes("child_count") &&
-              !name.includes("number_of_room_category") &&
-              !name.includes("old_child_sharing") &&
-              !name.includes("package_type") &&
-              !name.includes("room_category") &&
-              !name.includes("room_type") &&
-              !name.includes("young_child_sharing")
-            ) {
-              FD.append(name, value);
-            }
-          }
-
-          // FD.append('age', 20);
-          const config = {
-            headers: { "content-type": "multipart/form-data" },
-          };
-
-          let formDataJson = {};
-          for (let [key, value] of FD.entries()) {
-            formDataJson[key] = value;
-          }
-
-          formDataJson = { ...formDataJson, roomData };
-          // Print the JSON string
-          console.log(formDataJson);
-          console.log(formDataJson.hotel_name);
-          let totalRooms = 0;
-          var xhttp = new XMLHttpRequest();
-          xhttp.onreadystatechange = function () {
-            if (this.readyState == 4 && this.status == 200) {
-
-              document.getElementById('loader-form').style.display="none";
-              document.getElementById('prev-down').style.display="block";
-
-
-              console.log(this.responseText);
-              let fdata = JSON.parse(this.responseText);
-              console.log(fdata);
-              let tdate = new Date();
-              document.getElementById("mod_company").innerHTML = fdata.hotel_name;
-              document.getElementById("mod_address").innerHTML = fdata.area + "," + fdata.country;
-              document.getElementById("mod_date").innerHTML = tdate.toLocaleDateString();
-              document.getElementById("mod_fromdt").innerHTML = fdata.date_frm;
-              document.getElementById("mod_todt").innerHTML = fdata.date_to;
-              document.getElementById("mod_travAdult").innerHTML = fdata.total_adult_travellers;
-              document.getElementById("mod_travChild").innerHTML = fdata.total_child_travellers;
-              fdata.roomData.map((ini) => {
-                totalRooms += ini.total_rooms;
-              });
-              document.getElementById("mod_totalRoom").innerHTML = fdata.total_rooms;
-              // document.getElementById("row1col1").innerHTML =
-              //   fdata.hotel_name + ", " + fdata.package_type;
-              // document.getElementById("row1col3").innerHTML = fdata.adult_res ;
-
-              // // Row 2
-
-              // document.getElementById("row2col1").innerHTML =
-              //   fdata.hotel_name + ", " + fdata.package_type;
-              // document.getElementById("row2col2").innerHTML = fdata.adult_res + fdata.adult_res;
-
-              let totalMoney = 0;
-              fdata.roomData.map((ini,i) => {
-
-
-                let tr = document.createElement("tr");
-                let td1 = document.createElement("td");
-                td1.innerHTML = ini.no_of_rooms_for_category_type;
-                let td2 = document.createElement("td");
-                td2.innerHTML = fdata.hotel_name + ", " + ini.package_type + ", " + ini.room_category;
-                let td3 = document.createElement("td");
-                td3.innerHTML = fdata.adult_res;
-                // let td4 = document.createElement("td");
-                // td4.innerHTML = fdata.adult_res;
-
-                tr.appendChild(td1);
-                tr.appendChild(td2);
-                tr.appendChild(td3);
-                // tr.appendChild(td4);
-
-                document.getElementById("datatable").appendChild(tr);
-
-                let ttr=document.createElement("tr");
-                let ttd1 = document.createElement("td");
-                ttd1.innerHTML = "Total";
-                let ttd2 = document.createElement("td");
-                ttd2.innerHTML = "";
-                let ttd3 = document.createElement("td");
-                ttd3.innerHTML = fdata.adult_res;
-                // let ttd4 = document.createElement("td");
-                // td4.innerHTML = fdata.adult_res;
-
-                ttr.appendChild(ttd1);
-                ttr.appendChild(ttd2);
-                ttr.appendChild(ttd3);
-                console.log(fdata.roomData.length)
-                console.log(i)
-                if(fdata.roomData.length==i+1){ console.log("here"); document.getElementById("datatable").appendChild(ttr);}
-              });
-            }
-
-            else{
-              document.getElementById("err").style.display="block"
-              document.getElementById('loader-form').style.display="none";
-
-            }
-          };
-          xhttp.open("POST", "http://127.0.0.1:8000/get_form_data/");
-          xhttp.send(JSON.stringify(formDataJson));
-        }
-
-        function downloadModalData() {
-          // Create a new jsPDF instance
-          var doc = new jsPDF();
-            // Water Mark start
-
-  var backgroundImage = new Image();
-  backgroundImage.src =
-  "{%static 'img/watermark.jpg' %}"
-  function addWatermark() {
-    var imgWidth = doc.internal.pageSize.getWidth();
-    var imgHeight = doc.internal.pageSize.getHeight();
-
-    doc.addImage(backgroundImage, '', 0, 0, imgWidth, imgHeight-30);
-  }
-  addWatermark();
-  // Water mark end
-
-
-          // Get the modal content
-          var modalContent = document.getElementById("exampleModalCenter");
-
-          // Get the modal title and address
-          var companyName = modalContent.querySelector("#mod_company");
-          var address = modalContent.querySelector("#mod_address");
-          var mehad = modalContent.querySelector("#mhead");
-
-          // Get the date and trip summary details
-          var date = modalContent.querySelector("#mod_date").innerText;
-          var modid = modalContent.querySelector("#mod_id").innerText;
-          var fromDate = modalContent.querySelector("#mod_fromdt").innerText;
-          var toDate = modalContent.querySelector("#mod_todt").innerText;
-          var adultTravellers = modalContent.querySelector("#mod_travAdult").innerText;
-          var childTravellers = modalContent.querySelector("#mod_travChild").innerText;
-          var totalRooms = modalContent.querySelector("#mod_totalRoom").innerText;
-
-          // Set the document content
-          doc.setFontSize(12);
-          doc.fromHTML(companyName, 15, 25);
-          doc.fromHTML(address, 15, 35);
-          var imgData = new Image();
-          imgData.src = "{%static 'img/dummylogo.jpg' %}";
-          doc.addImage(imgData, "", 15, 45, 20, 20);
-
-          doc.fromHTML("Date: " + date, 15, 60);
-          doc.fromHTML(mehad, 15, 80);
-          doc.fromHTML("Date: " + fromDate + " To " + toDate, 15, 90);
-          doc.fromHTML("Total Adult travellers: " + adultTravellers, 15, 100);
-          doc.fromHTML("Total Child travellers: " + childTravellers, 15, 110);
-          doc.fromHTML("Total Rooms: " + totalRooms, 15, 120);
-
-
-
-          // Get the table data
-          var table = modalContent.querySelector("table");
-          var contra = modalContent.querySelector("#contract");
-
-          // Generate the table using autoTable plugin
-          var options = {
-            startY: 140, // Set the initial y-position for the table
-            margin: { top: 10 },
-            didDrawPage: function (data) {
-              // Add new page if the table exceeds the page height
-              if (data.startY + data.table.height > data.page.height) {
-                doc.addPage();
+                  document.getElementById("chkdates").style.display="block";
+                 console.log("dates not avail")
+                }
               }
-            },
-          };
 
-          doc.autoTable({
-            html: table,
-            startY: options.startY,
-            margin: options.margin,
-          });
-          doc.autoTable({ html: contra, startY: doc.autoTable.previous.finalY + 10 });
+            }
+        // Checking dates Availabilty End=====>
 
-          // Save the document
-          doc.save("modal_data.pdf");
-        }
-        var downloadButton = document.querySelector("#exampleModalCenter .modal-footer .btn-primary");
-        downloadButton.addEventListener("click", downloadModalData);
-</script>
 
-<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
-<script>
-  var myJson = {{jsonData | safe}}
-  $.each(myJson.country, function (index, value) {
-      var country_id;
-      var state_id;
-      var city_id;
+            var roomData = [];
+            var trooms = 0;
+            function addRoom() {
+              roomData = [];
+              trooms += 1;
+              // Get the container element for the room requests
+              var roomContainer = document.getElementById("roomContainer");
 
-          $("#country").append('<option rel="' + index + '" value="'+value.id+'">'+value.name+'</option>');
+              // Create a new div element for the room request
+              var roomDiv = document.createElement("div");
+              roomDiv.className = "room-request";
 
-          $("#country").change(function () {
-              $("#state, #hotel_name").find("option:gt(0)").remove();
-              $("#state").find("option:first").text("Loading...");
+              // Clone the first room request div to create a new set of input fields
+              var clonedRoomRequest = document.querySelector(".room-request:first-child").cloneNode(true);
 
-              country_id = $(this).find('option:selected').attr('rel');
-              console.log("Country INDEX : " + country_id);
-
-              $("#state").find("option:first").remove();
-              $.each(myJson.country[country_id].states, function (index1, value1) {
-                  $("#state").append('<option rel="' + index1 + '" value="'+value1.id+'">'+value1.name+'</option>');
+              // Clear the values of the cloned input fields
+              var clonedInputs = clonedRoomRequest.querySelectorAll("input, select");
+              clonedInputs.forEach(function (input) {
+                input.value = "";
+                var inputId = input.getAttribute("id");
+                var inputName = input.getAttribute("name");
+                // Append a number to the id and name attributes
+                input.setAttribute("id", inputId + roomContainer.childElementCount);
+                input.setAttribute("name", inputName + roomContainer.childElementCount);
               });
 
-          });
+              var clonedLabels = clonedRoomRequest.querySelectorAll("label");
+              clonedLabels.forEach(function (label) {
+                var labelFor = label.getAttribute("for");
+                // Append a number to the for attribute
+                label.setAttribute("for", labelFor + roomContainer.childElementCount);
+              });
+
+              // Append the cloned room request to the new div
+              roomDiv.appendChild(clonedRoomRequest);
+
+              // Append the new room div to the container
+              roomContainer.appendChild(roomDiv);
+              var room = {};
+              for (x = 0; x <= trooms; x++) {
+                let incount = x == 0 ? "" : x;
+
+                room = {
+                  package_type: document.querySelector(`#package_type${incount}`).value,
+                  room_category: document.querySelector(`#room_category${incount}`).value,
+                  room_type: document.querySelector(`#room_type${incount}`).value,
+                  number_of_room_category: document.querySelector(`#number_of_room_category${incount}`).value,
+                  Adult_count: document.querySelector(`#Adult_count${incount}`).value,
+                  child_count: document.querySelector(`#child_count${incount}`).value,
+                  old_child_sharing: document.querySelector(`#old_child_sharing${incount}`).value,
+                  young_child_sharing: document.querySelector(`#young_child_sharing${incount}`).value,
+                  // Add other room data fields here
+                };
+
+                if (roomData.length < trooms + 1) {
+                  roomData = [...roomData, room];
+                }
+              }
+              console.log(roomData);
+              // Add the room data to the roomData array
+            }
+
+            // Attach the addRoom function to the "Add Room" button's click event
+            var addButton = document.querySelector("#addRoombtn");
+            addButton.addEventListener("click", addRoom);
+
+            // Add Room Finish
+
+            function handlesubmit(e) {
+              e.preventDefault();
+              console.log("here")
+              document.getElementById('loader-form').style.display="block";
+              document.getElementById("err").style.display="none"
+
+              roomData = [];
+              var room = {};
+              for (x = 0; x <= trooms; x++) {
+                let incount = x == 0 ? "" : x;
+
+                room = {
+                  package_type: document.querySelector(`#package_type${incount}`).value,
+                  room_category: document.querySelector(`#room_category${incount}`).value,
+                  room_type: document.querySelector(`#room_type${incount}`).value,
+                  number_of_room_category: document.querySelector(`#number_of_room_category${incount}`).value,
+                  Adult_count: document.querySelector(`#Adult_count${incount}`).value,
+                  child_count: document.querySelector(`#child_count${incount}`).value,
+                  old_child_sharing: document.querySelector(`#old_child_sharing${incount}`).value,
+                  young_child_sharing: document.querySelector(`#young_child_sharing${incount}`).value,
+                  // Add other room data fields here
+                };
+
+                if (roomData.length < trooms + 1) {
+                  roomData = [...roomData, room];
+                }
+              }
+
+              const FD = new FormData();
+              let formData = new FormData(document.getElementById("quote")); //formdata object
+
+              for (const [name, value] of formData.entries()) {
+                if (
+                  !name.includes("Adult_count") &&
+                  !name.includes("child_count") &&
+                  !name.includes("number_of_room_category") &&
+                  !name.includes("old_child_sharing") &&
+                  !name.includes("package_type") &&
+                  !name.includes("room_category") &&
+                  !name.includes("room_type") &&
+                  !name.includes("young_child_sharing")
+                ) {
+                  FD.append(name, value);
+                }
+              }
+
+              // FD.append('age', 20);
+              const config = {
+                headers: { "content-type": "multipart/form-data" },
+              };
+
+              let formDataJson = {};
+              for (let [key, value] of FD.entries()) {
+                formDataJson[key] = value;
+              }
+
+              formDataJson = { ...formDataJson, roomData };
+              // Print the JSON string
+              console.log(formDataJson);
+              console.log(formDataJson.hotel_name);
+              let totalRooms = 0;
+              var xhttp = new XMLHttpRequest();
+              xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+
+                  document.getElementById('loader-form').style.display="none";
+                  document.getElementById('prev-down').style.display="block";
+                  document.getElementById("err").style.display="none"
 
 
-          $("#state").change(function () {
-              $("#hotel_name").find("option:gt(0)").remove();
-              $("#hotel_name").find("option:first").text("Loading...");
+                  console.log(this.responseText);
+                  let fdata = JSON.parse(this.responseText);
+                  console.log(fdata);
+                  let tdate = new Date();
+                  document.getElementById("mod_company").innerHTML = fdata.hotel_name;
+                  document.getElementById("mod_address").innerHTML = fdata.area + "," + fdata.country;
+                  document.getElementById("mod_date").innerHTML = tdate.toLocaleDateString();
+                  document.getElementById("mod_fromdt").innerHTML = fdata.date_frm;
+                  document.getElementById("mod_todt").innerHTML = fdata.date_to;
+                  document.getElementById("mod_travAdult").innerHTML = fdata.total_adult_travellers;
+                  document.getElementById("mod_travChild").innerHTML = fdata.total_child_travellers;
+                  fdata.roomData.map((ini) => {
+                    totalRooms += ini.total_rooms;
+                  });
+                  document.getElementById("mod_totalRoom").innerHTML = fdata.total_rooms;
+                  // document.getElementById("row1col1").innerHTML =
+                  //   fdata.hotel_name + ", " + fdata.package_type;
+                  // document.getElementById("row1col3").innerHTML = fdata.adult_res ;
 
-              state_id = $(this).find('option:selected').attr('rel');
-              console.log("State INDEX : " + state_id);
+                  // // Row 2
 
-              $("#hotel_name").find("option:first").remove();
-              $.each(myJson.country[country_id].states[state_id].hotels, function (index2, value2) {
-                  //$("#hotel_name").find("option:first").text("");
-                  $("#hotel_name").append('<option rel="' + index2 + '" value="'+value2.id+'">'+value2.name+'</option>');
+                  // document.getElementById("row2col1").innerHTML =
+                  //   fdata.hotel_name + ", " + fdata.package_type;
+                  // document.getElementById("row2col2").innerHTML = fdata.adult_res + fdata.adult_res;
+
+                  let totalMoney = 0;
+                  fdata.roomData.map((ini,i) => {
+
+
+                    let tr = document.createElement("tr");
+                    let td1 = document.createElement("td");
+                    td1.innerHTML = ini.no_of_rooms_for_category_type;
+                    let td2 = document.createElement("td");
+                    td2.innerHTML = fdata.hotel_name + ", " + ini.package_type + ", " + ini.room_category;
+                    let td3 = document.createElement("td");
+                    td3.innerHTML = fdata.adult_res;
+                    // let td4 = document.createElement("td");
+                    // td4.innerHTML = fdata.adult_res;
+
+                    tr.appendChild(td1);
+                    tr.appendChild(td2);
+                    tr.appendChild(td3);
+                    // tr.appendChild(td4);
+
+                    document.getElementById("datatable").appendChild(tr);
+
+                    let ttr=document.createElement("tr");
+                    let ttd1 = document.createElement("td");
+                    ttd1.innerHTML = "Total";
+                    let ttd2 = document.createElement("td");
+                    ttd2.innerHTML = "";
+                    let ttd3 = document.createElement("td");
+                    ttd3.innerHTML = fdata.adult_res;
+                    // let ttd4 = document.createElement("td");
+                    // td4.innerHTML = fdata.adult_res;
+
+                    ttr.appendChild(ttd1);
+                    ttr.appendChild(ttd2);
+                    ttr.appendChild(ttd3);
+                    console.log(fdata.roomData.length)
+                    console.log(i)
+                    if(fdata.roomData.length==i+1){ console.log("here"); document.getElementById("datatable").appendChild(ttr);}
+                  });
+                }
+
+                else{
+                  document.getElementById("err").style.display="block"
+                  document.getElementById('loader-form').style.display="none";
+
+                }
+              };
+              xhttp.open("POST", "http://127.0.0.1:8000/get_form_data/");
+              xhttp.send(JSON.stringify(formDataJson));
+            }
+
+            function downloadModalData() {
+              // Create a new jsPDF instance
+              var doc = new jsPDF();
+                // Water Mark start
+
+      var backgroundImage = new Image();
+      backgroundImage.src =
+      "{%static 'img/watermark.jpg' %}"
+      function addWatermark() {
+        var imgWidth = doc.internal.pageSize.getWidth();
+        var imgHeight = doc.internal.pageSize.getHeight();
+
+        doc.addImage(backgroundImage, '', 0, 0, imgWidth, imgHeight-30);
+      }
+      addWatermark();
+      // Water mark end
+
+
+              // Get the modal content
+              var modalContent = document.getElementById("exampleModalCenter");
+
+              // Get the modal title and address
+              var companyName = modalContent.querySelector("#mod_company");
+              var address = modalContent.querySelector("#mod_address");
+              var mehad = modalContent.querySelector("#mhead");
+
+              // Get the date and trip summary details
+              var date = modalContent.querySelector("#mod_date").innerText;
+              var modid = modalContent.querySelector("#mod_id").innerText;
+              var fromDate = modalContent.querySelector("#mod_fromdt").innerText;
+              var toDate = modalContent.querySelector("#mod_todt").innerText;
+              var adultTravellers = modalContent.querySelector("#mod_travAdult").innerText;
+              var childTravellers = modalContent.querySelector("#mod_travChild").innerText;
+              var totalRooms = modalContent.querySelector("#mod_totalRoom").innerText;
+
+              // Set the document content
+              doc.setFontSize(12);
+              doc.fromHTML(companyName, 15, 25);
+              doc.fromHTML(address, 15, 35);
+              var imgData = new Image();
+              imgData.src = "{%static 'img/dummylogo.jpg' %}";
+              doc.addImage(imgData, "", 15, 45, 20, 20);
+
+              doc.fromHTML("Date: " + date, 15, 60);
+              doc.fromHTML(mehad, 15, 80);
+              doc.fromHTML("Date: " + fromDate + " To " + toDate, 15, 90);
+              doc.fromHTML("Total Adult travellers: " + adultTravellers, 15, 100);
+              doc.fromHTML("Total Child travellers: " + childTravellers, 15, 110);
+              doc.fromHTML("Total Rooms: " + totalRooms, 15, 120);
+
+
+
+              // Get the table data
+              var table = modalContent.querySelector("table");
+              var contra = modalContent.querySelector("#contract");
+
+              // Generate the table using autoTable plugin
+              var options = {
+                startY: 140, // Set the initial y-position for the table
+                margin: { top: 10 },
+                didDrawPage: function (data) {
+                  // Add new page if the table exceeds the page height
+                  if (data.startY + data.table.height > data.page.height) {
+                    doc.addPage();
+                  }
+                },
+              };
+
+              doc.autoTable({
+                html: table,
+                startY: options.startY,
+                margin: options.margin,
+              });
+              doc.autoTable({ html: contra, startY: doc.autoTable.previous.finalY + 10 });
+
+              // Save the document
+              doc.save("modal_data.pdf");
+            }
+            var downloadButton = document.querySelector("#exampleModalCenter .modal-footer .btn-primary");
+            downloadButton.addEventListener("click", downloadModalData);
+    </script>
+
+    <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script>
+      var myJson = {{jsonData | safe}}
+      $.each(myJson.country, function (index, value) {
+          var country_id;
+          var state_id;
+          var city_id;
+
+              $("#country").append('<option rel="' + index + '" value="'+value.id+'">'+value.name+'</option>');
+
+              $("#country").change(function () {
+                  $("#state, #hotel_name").find("option:gt(0)").remove();
+                  $("#state").find("option:first").text("Loading...");
+
+                  country_id = $(this).find('option:selected').attr('rel');
+                  console.log("Country INDEX : " + country_id);
+
+                  $("#state").find("option:first").remove();
+                  $.each(myJson.country[country_id].states, function (index1, value1) {
+                      $("#state").append('<option rel="' + index1 + '" value="'+value1.id+'">'+value1.name+'</option>');
+                  });
+
               });
 
 
-          });
+              $("#state").change(function () {
+                  $("#hotel_name").find("option:gt(0)").remove();
+                  $("#hotel_name").find("option:first").text("Loading...");
 
-  });
-</script> 
+                  state_id = $(this).find('option:selected').attr('rel');
+                  console.log("State INDEX : " + state_id);
+
+                  $("#hotel_name").find("option:first").remove();
+                  $.each(myJson.country[country_id].states[state_id].hotels, function (index2, value2) {
+                      //$("#hotel_name").find("option:first").text("");
+                      $("#hotel_name").append('<option rel="' + index2 + '" value="'+value2.id+'">'+value2.name+'</option>');
+                  });
 
 
+              });
+
+      });
+    </script>
 
     <!-- Bootstrap core JavaScript-->
     <script src="{%static 'vendor/jquery/jquery.min.js' %}"></script>
