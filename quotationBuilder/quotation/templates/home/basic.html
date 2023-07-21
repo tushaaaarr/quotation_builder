@@ -372,27 +372,104 @@
                           tripName.appendChild(tripTD);
 
                         dParent.append(companyName, tripName)
+                        let x = 0;
+                        fdata.itinery_data.todal_days_details.map((ini,i)=>{
 
-                        fdata.roomData.map((ini,i)=>{
-                          let  hotelName, hotelDesc;
+                          let  hotelName, hotelDesc, hotelCpic;
                           hotelName = document.createElement("tr");
                           hotelDesc =document.createElement("tr");
+                          hotelCpic = document.createElement("tr");
 
+                          let cpic = document.createElement("img");
+
+                          let hotelcpicTD = document.createElement("td");
                           let hotelTD = document.createElement("td");
                           let hoteldescTD = document.createElement("td");
-
-                          // hotelName.style="margin-bottom:10px; padding:10px; border: 2px solid rgba(0,0,0,0.5)";
-                          // hotelDesc.style="margin-bottom:10px; padding:10px; border: 2px solid rgba(0,0,0,0.5)"
                           hotelTD.align="center";
                           hoteldescTD.align="center";
 
-                          hotelTD.innerHTML = `<h3>Day ${i+1}: ${fdata.hotel_name}</h3>`;
-                          hoteldescTD.innerHTML = `<h3>Some Description about the day ${i+1}</h3>`
 
-                          hotelName.appendChild(hotelTD);
-                          hotelDesc.appendChild(hoteldescTD);
+                            cpic.height="120";
+                            cpic.src="http://"+ini.receptionroom_pic;
 
-                          dParent.append(hotelName, hotelDesc)
+                            hotelcpicTD.appendChild(cpic);
+                            hotelTD.innerHTML = `<h3>Day ${i+1}: ${ini.hotel_name}</h3>`;
+                            hoteldescTD.innerHTML = `<h3>${ini.description_first_day}</h3>`
+
+                            hotelName.appendChild(hotelTD);
+                            hotelDesc.appendChild(hoteldescTD);
+                            hotelCpic.appendChild(hotelcpicTD);
+
+                            dParent.append(hotelName, hotelDesc, hotelCpic)
+
+
+                          hotelName, hotelDesc, hotelCpic;
+                          hotelName = document.createElement("tr");
+                          hotelDesc =document.createElement("tr");
+                          hotelCpic = document.createElement("tr");
+
+                          cpic = document.createElement("img");
+
+                          hotelcpicTD = document.createElement("td");
+                          hotelTD = document.createElement("td");
+                          hoteldescTD = document.createElement("td");
+
+                            hotelTD.align="center";
+                            hoteldescTD.align="center";
+
+                            cpic.height="120";
+                            cpic.src="http://"+ini.bedroom_pic;
+
+                            hotelcpicTD.appendChild(cpic);
+
+                            hotelTD.innerHTML = `<h3>Day ${ini.total_days-1}: ${ini.hotel_name}</h3>`;
+                            hoteldescTD.innerHTML = `<h3>${ini.description_full_day}</h3>`
+
+                            hotelName.appendChild(hotelTD);
+                            hotelDesc.appendChild(hoteldescTD);
+                            hotelCpic.appendChild(hotelcpicTD);
+
+                            dParent.append(hotelName, hotelDesc, hotelCpic)
+
+
+
+                            hotelName, hotelDesc, hotelCpic;
+                            hotelName = document.createElement("tr");
+                            hotelDesc =document.createElement("tr");
+                            hotelCpic = document.createElement("tr");
+
+                            cpic = document.createElement("img");
+
+                            hotelcpicTD = document.createElement("td");
+                            hotelTD = document.createElement("td");
+                            hoteldescTD = document.createElement("td");
+                              hotelTD.align="center";
+                              hoteldescTD.align="center";
+
+                            cpic.height="120";
+                            cpic.src="http://"+ini.diningroom_pic;
+
+                            hotelcpicTD.appendChild(cpic);
+
+                            hotelTD.innerHTML = `<h3>Day ${ini.total_days}: ${ini.hotel_name}</h3>`;
+                            hoteldescTD.innerHTML = `<h3>${ini.description_last_day}</h3>`
+
+                            hotelName.appendChild(hotelTD);
+                            hotelDesc.appendChild(hoteldescTD);
+                            hotelCpic.appendChild(hotelcpicTD);
+
+                            dParent.append(hotelName, hotelDesc, hotelCpic)
+
+
+
+
+
+
+                          // hotelName.style="margin-bottom:10px; padding:10px; border: 2px solid rgba(0,0,0,0.5)";
+                          // hotelDesc.style="margin-bottom:10px; padding:10px; border: 2px solid rgba(0,0,0,0.5)"
+
+
+
                         })
 
       // DOCX DOC MODAL DATA ENTRY end ===========>
