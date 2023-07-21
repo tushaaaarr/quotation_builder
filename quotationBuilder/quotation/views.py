@@ -9,6 +9,7 @@ from quotationBuilder.custom.mixins_views import StatusFieldMixin
 from .forms import *
 from .models import *
 from django.forms import modelformset_factory
+import datetime
 
 from django.contrib.auth.models import User, auth
 from random import randint
@@ -223,6 +224,10 @@ def get_form_data(request):
         resp = request.body
         body_unicode = resp.decode('utf-8') 
         post_data = json.loads(body_unicode)
+        date_frm = post_data['date_frm'].split("-")
+        date_to = post_data['date_to'].split("-")
+        start_time = datetime.datetime(int(date_frm[0]), int(date_frm[1]), int(date_frm[2]))
+        end_time = datetime.datetime(int(date_to[0]), int(date_to[1]), int(date_to[2]))
         country = post_data['country']
         area  = post_data['state']
         hotel_Id  = post_data['hotel_name']
@@ -233,6 +238,8 @@ def get_form_data(request):
         hotel_instance = Hotel.objects.get(id = hotel_Id)
         Quotation_ins = QuotationMainRequest(
             hotel_name = hotel_instance,
+            date_from = start_time,
+            date_to = end_time,
             country = country,
             area = area,
             number_adult_resident = adult_res,
@@ -319,6 +326,29 @@ def get_form_data(request):
                 HotelRateInstance = HotelRateInstance.filter(traveller_type = "Resident")
                 rates['child_res'] = HotelRateInstance[0].child_rate * int(child_res)
 
+ 
+        # Itinery data
+        itinery_data = {
+            'date_from':post_data['date_frm'],
+            'date_to':post_data['date_to'],
+            'area':Quotation_ins.area,
+            'country':Quotation_ins.country,
+            }
+        day_lst = []
+        days = (end_time - start_time).days
+        day_lst.append({
+        'total_days':days,
+        'hotel_name': hotel_instance.hotel_name,
+        'hotel_description':hotel_instance.hotel_description,
+        'description_first_day':hotel_instance.description_first_day,
+        'description_full_day':hotel_instance.description_full_day,
+        'description_last_day':hotel_instance.description_last_day,
+        'receptionroom_pic':"127.0.0.1:8000/uploads/" + str(hotel_instance.receptionroom_pic),
+        'bedroom_pic':"127.0.0.1:8000/uploads/" + str(hotel_instance.bedroom_pic),
+        'diningroom_pic':"127.0.0.1:8000/uploads/" + str(hotel_instance.diningroom_pic),
+        })
+        itinery_data['todal_days_details'] = day_lst
+        print(itinery_data)
         OpData = {   
             "country":country,
             "hotel_name":hotel_instance.hotel_name,
@@ -337,6 +367,7 @@ def get_form_data(request):
             'date_to':post_data['date_to'],
             'roomData':roomData,
             "total_rooms":total_rooms,
+            "itinery_data":itinery_data
         }
         return JsonResponse(OpData,safe=False)
 

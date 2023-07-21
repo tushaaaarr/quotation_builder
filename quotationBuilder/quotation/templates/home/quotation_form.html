@@ -26,7 +26,8 @@
     animation: fadeloop 0.75s infinite;
     opacity: 0;
   }
-  #prev-down {
+  #prev-down,
+  #itni-btn {
     display: none;
   }
 
@@ -53,360 +54,377 @@
 
 <!-- Loader End -->
 
-<!-- Page Wrapper --> 
-  <!-- Content Wrapper -->
-  <div id="content-wrapper" class="d-flex flex-column">
-    <!-- Main Content -->
-    <div id="content">
-      <!-- Topbar -->
-      <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-        <!-- Sidebar Toggle (Topbar) -->
-        <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
-          <i class="fa fa-bars"></i>
-        </button>
-      </nav>
+<!-- Page Wrapper -->
+<!-- Content Wrapper -->
+<div id="content-wrapper" class="d-flex flex-column">
+  <!-- Main Content -->
+  <div id="content">
+    <!-- Topbar -->
+    <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+      <!-- Sidebar Toggle (Topbar) -->
+      <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+        <i class="fa fa-bars"></i>
+      </button>
+    </nav>
 
-      <div class="container p-3">
-        <div class="d-sm-flex align-items-center justify-content-between mb-4">
-          <h1 class="h3 mb-0 text-gray-800">Create Quotation</h1>
-        </div>
-        <form onsubmit="handlesubmit(event)" id="quote">
-          {% csrf_token %}
-          <div class="row">
-            <!-- from date to date -->
-            <div class="col-6">
-              <div class="form-group">
-                <label for="date_frm">Date From</label>
-                <input
-                  type="date"
-                  id="date_frm"
-                  name="date_frm"
-                  class="form-control"
-                  onchange="checkDateRange()"
-                />
-              </div>
-            </div>
-            <div class="col-6">
-              <div class="form-group">
-                <label for="date_to">Date To</label>
-                <input type="date" id="date_to" name="date_to"class="form-control" onchange="checkDateRange()"/>
-              </div>
-            </div>
-            <div class="col-12">
-              <p class="bg-warning text-dark px-3 rounded" id="chkdates">
-                Selected Dates are not Available
-              </p>
-            </div>
-
-            <div class="col-6">
-              <div class="form-group">
-                <label for="country">Country</label>
-                <select
-                  class="form-select form-control"
-                  aria-label="country"
-                  id="country"
-                  name="country">
-                  <option value="000">-Select Country-</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="col-6">
-              <div class="form-group">
-                <label for="area">Area</label>
-                <select class="form-select form-control" aria-label="area" id="state" name="state">
-                  <option value="000">-Select Area-</option>
-                </select>
-              </div>
-            </div>
-
-            <!-- Hotel name -->
-            <div class="col-12">
-              <div class="form-group">
-                <label for="hotel_name">Hotel Name</label>
-                <select
-                  class="form-select form-control"
-                  aria-label="hotel_name"
-                  id="hotel_name"
-                  name="hotel_name"
-                >
-                  <option value="000">-Select Hotel-</option>
-                </select>
-              </div>
-            </div>
-
-            <!-- Residents and non-residents counts -->
-            <div class="col-6">
-              <div class="form-group">
-                <label for="adult_res">Number adult resident: </label>
-                <input
-                  type="number"
-                  class="form-control"
-                  id="adult_res"
-                  placeholder="Number adult resident"
-                  name="adult_res"
-                  value="0"
-                />
-              </div>
-            </div>
-            <div class="col-6">
-              <div class="form-group">
-                <label for="adult_nonres">Number adult Non-Resident: </label>
-                <input
-                  type="number"
-                  class="form-control"
-                  id="adult_nonres"
-                  placeholder="Number Adult Non-Resident"
-                  name="adult_nonres"
-                  value="0"
-                />
-              </div>
-            </div>
-            <!-- No. Child Residents and No.of child non residents -->
-            <div class="col-6">
-              <div class="form-group">
-                <label for="child_res">Number Child Resident: </label>
-                <input
-                  type="number"
-                  class="form-control"
-                  id="child_res"
-                  placeholder="Number Child Resident"
-                  name="child_res"
-                  value="0"
-                />
-              </div>
-            </div>
-            <div class="col-6">
-              <div class="form-group">
-                <label for="child_nonres">Number Child Non-Resident: </label>
-                <input
-                  type="number"
-                  class="form-control"
-                  id="child_nonres"
-                  placeholder="Number Child Non-Resident"
-                  name="child_nonres"
-                  value="0"
-                />
-              </div>
-            </div>
-
-            <div class="col-12">
-              <h4>Room Request</h4>
-            </div>
-            <!-- Rooms Requests -->
-            <div id="roomContainer">
-              <div class="room-request row">
-                <div class="col-6">
-                  <div class="form-group">
-                    <label for="package_type">Package Type</label>
-                    <select
-                      class="form-select form-control"
-                      aria-label="package_type"
-                      id="package_type"
-                      name="package_type"
-                    >
-                      {%for package_type in room_dict.package_type%}
-                      <option value="{{package_type}}">{{package_type}}</option>
-                      {%endfor%}
-                    </select>
-                  </div>
-                </div>
-                <div class="col-6">
-                  <div class="form-group">
-                    <label for="room_category">Room Category</label>
-                    <select
-                      class="form-select form-control"
-                      aria-label="room_category"
-                      id="room_category"
-                      name="room_category"
-                    >
-                      {%for room_category in room_dict.room_category%}
-                      <option value="{{room_category}}">{{room_category}}</option>
-                      {%endfor%}
-                    </select>
-                  </div>
-                </div>
-
-                <!-- Room type and room count -->
-                <div class="col-6">
-                  <div class="form-group">
-                    <label for="room_type">Room Type</label>
-                    <select
-                      class="form-select form-control"
-                      aria-label="room_type"
-                      id="room_type"
-                      name="room_type"
-                    >
-                      {%for room_type in room_dict.room_type%}
-                      <option value="{{room_type}}">{{room_type}}</option>
-                      {%endfor%}
-                    </select>
-                  </div>
-                </div>
-                <div class="col-6">
-                  <div class="form-group">
-                    <label for="number_of_room_category">No of rooms for category type</label>
-                    <input
-                      type="number"
-                      class="form-control"
-                      id="number_of_room_category"
-                      placeholder="No of rooms for category type"
-                      name="number_of_room_category"
-                      value="0"
-                    />
-                  </div>
-                </div>
-
-                <!-- Chidren and ault count -->
-
-                <div class="col-6">
-                  <div class="form-group">
-                    <label for="Adult_count">No. of Adults</label>
-                    <input
-                      type="number"
-                      class="form-control"
-                      id="Adult_count"
-                      placeholder="No of Adults--"
-                      name="Adult_count"
-                      value="0"
-                    />
-                  </div>
-                </div>
-
-                <div class="col-6">
-                  <div class="form-group">
-                    <label for="child_count">No of Children</label>
-                    <input
-                      type="number"
-                      class="form-control"
-                      id="child_count"
-                      placeholder="No of Children"
-                      name="child_count"
-                      value="0"
-                    />
-                  </div>
-                </div>
-                <div class="col-6">
-                  <div class="form-group">
-                    <label for="old_child_sharing">No of old children sharing</label>
-                    <input
-                      type="number"
-                      class="form-control"
-                      id="old_child_sharing"
-                      placeholder="No of old children sharing"
-                      name="old_child_sharing"
-                      value="0"
-                    />
-                  </div>
-                </div>
-
-                <div class="col-6">
-                  <div class="form-group">
-                    <label for="young_child_sharing">No of young children sharing</label>
-                    <input
-                      type="number"
-                      class="form-control"
-                      id="young_child_sharing"
-                      placeholder="No of young children sharing"
-                      name="young_child_sharing"
-                      value="0"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- Room Request End -->
-
-          <button type="button" class="btn btn-primary" id="addRoombtn">Add Room</button>
-
-          <div class="d-flex align-items-center justify-content-between">
-            <button
-              type="button"
-              class="btn btn-primary mt-1 p-2 w-50 mr-3"
-              data-toggle="modal"
-              data-target="#exampleModalCenter"
-              id="prev-down"
-            >
-              Preview / Download
-            </button>
-            <button type="submit" class="btn btn-primary mt-1 p-2 w-50">Submit</button>
-          </div>
-        </form>
-        <p class="bg-warning text-dark p-3 w-100" id="err">Room Type Not Found</p>
+    <div class="container p-3">
+      <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Create Quotation</h1>
       </div>
-
-      <!-- End of Topbar -->
-    </div>
-    <!-- Button trigger modal -->
-
-    <!-- Modal -->
-    <div
-      class="modal fade"
-      id="exampleModalCenter"
-      tabindex="-1"
-      role="dialog"
-      aria-labelledby="exampleModalCenterTitle"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-        <div
-          class="modal-content"
-          style="
-            background-image: linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)),
-              url('https://img.myloview.com/posters/creative-black-cat-logo-design-vector-stock-400-176246869.jpg');
-            background-position: center;
-            background-size: contain;
-          "
-        >
-          <div class="modal-header">
-            <div>
-              <h5 class="modal-title" id="mod_company">Company Name</h5>
-              <p class="fs-4 fw-lighter d-block mb-0 pb-0" id="mod_address">123 sesame street</p>
-              <img
-                src="https://img.myloview.com/posters/creative-black-cat-logo-design-vector-stock-400-176246869.jpg"
-                style="height: 80px; width: auto"
+      <form onsubmit="handlesubmit(event)" id="quote">
+        {% csrf_token %}
+        <div class="row">
+          <!-- from date to date -->
+          <div class="col-6">
+            <div class="form-group">
+              <label for="date_frm">Date From</label>
+              <input
+                type="date"
+                id="date_frm"
+                name="date_frm"
+                class="form-control"
+                onchange="checkDateRange()"
               />
             </div>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
           </div>
-          <div class="d-flex justify-content-between px-3">
-            <p class="text-lead fw-bold">
-              Date:<span id="mod_date" class="text-lead fw-bold"> 22/June/2023</span>
+          <div class="col-6">
+            <div class="form-group">
+              <label for="date_to">Date To</label>
+              <input
+                type="date"
+                id="date_to"
+                name="date_to"
+                class="form-control"
+                onchange="checkDateRange()"
+              />
+            </div>
+          </div>
+          <div class="col-12">
+            <p class="bg-warning text-dark px-3 rounded" id="chkdates">
+              Selected Dates are not Available
             </p>
-            <p class="text-lead fw-bold"><span id="mod_id"> #123ACV69</span></p>
           </div>
 
-          <div class="modal-body">
-            <h5 class="fw-bold display-6" id="mhead">Trip Summary</h5>
-            <p class="py-0 my-1">
-              Date: <span id="mod_fromdt">22/05/2023</span> To
-              <span id="mod_todt">22/06/2023</span>
-            </p>
-            <p class="py-0 my-1">Total Adult travellers: <span id="mod_travAdult">5</span></p>
-            <p class="py-0 my-1">Total Child travellers: <span id="mod_travChild">10</span></p>
-            <p class="py-0 my-1">Total Rooms: <span id="mod_totalRoom">8</span></p>
+          <div class="col-6">
+            <div class="form-group">
+              <label for="country">Country</label>
+              <select
+                class="form-select form-control"
+                aria-label="country"
+                id="country"
+                name="country"
+              >
+                <option value="000">-Select Country-</option>
+              </select>
+            </div>
+          </div>
 
-            <!-- <div class="text-center py-1">
+          <div class="col-6">
+            <div class="form-group">
+              <label for="area">Area</label>
+              <select class="form-select form-control" aria-label="area" id="state" name="state">
+                <option value="000">-Select Area-</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Hotel name -->
+          <div class="col-12">
+            <div class="form-group">
+              <label for="hotel_name">Hotel Name</label>
+              <select
+                class="form-select form-control"
+                aria-label="hotel_name"
+                id="hotel_name"
+                name="hotel_name"
+              >
+                <option value="000">-Select Hotel-</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Residents and non-residents counts -->
+          <div class="col-6">
+            <div class="form-group">
+              <label for="adult_res">Number adult resident: </label>
+              <input
+                type="number"
+                class="form-control"
+                id="adult_res"
+                placeholder="Number adult resident"
+                name="adult_res"
+                value="0"
+              />
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="form-group">
+              <label for="adult_nonres">Number adult Non-Resident: </label>
+              <input
+                type="number"
+                class="form-control"
+                id="adult_nonres"
+                placeholder="Number Adult Non-Resident"
+                name="adult_nonres"
+                value="0"
+              />
+            </div>
+          </div>
+          <!-- No. Child Residents and No.of child non residents -->
+          <div class="col-6">
+            <div class="form-group">
+              <label for="child_res">Number Child Resident: </label>
+              <input
+                type="number"
+                class="form-control"
+                id="child_res"
+                placeholder="Number Child Resident"
+                name="child_res"
+                value="0"
+              />
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="form-group">
+              <label for="child_nonres">Number Child Non-Resident: </label>
+              <input
+                type="number"
+                class="form-control"
+                id="child_nonres"
+                placeholder="Number Child Non-Resident"
+                name="child_nonres"
+                value="0"
+              />
+            </div>
+          </div>
+
+          <div class="col-12">
+            <h4>Room Request</h4>
+          </div>
+          <!-- Rooms Requests -->
+          <div id="roomContainer">
+            <div class="room-request row">
+              <div class="col-6">
+                <div class="form-group">
+                  <label for="package_type">Package Type</label>
+                  <select
+                    class="form-select form-control"
+                    aria-label="package_type"
+                    id="package_type"
+                    name="package_type"
+                  >
+                    {%for package_type in room_dict.package_type%}
+                    <option value="{{package_type}}">{{package_type}}</option>
+                    {%endfor%}
+                  </select>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="form-group">
+                  <label for="room_category">Room Category</label>
+                  <select
+                    class="form-select form-control"
+                    aria-label="room_category"
+                    id="room_category"
+                    name="room_category"
+                  >
+                    {%for room_category in room_dict.room_category%}
+                    <option value="{{room_category}}">{{room_category}}</option>
+                    {%endfor%}
+                  </select>
+                </div>
+              </div>
+
+              <!-- Room type and room count -->
+              <div class="col-6">
+                <div class="form-group">
+                  <label for="room_type">Room Type</label>
+                  <select
+                    class="form-select form-control"
+                    aria-label="room_type"
+                    id="room_type"
+                    name="room_type"
+                  >
+                    {%for room_type in room_dict.room_type%}
+                    <option value="{{room_type}}">{{room_type}}</option>
+                    {%endfor%}
+                  </select>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="form-group">
+                  <label for="number_of_room_category">No of rooms for category type</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="number_of_room_category"
+                    placeholder="No of rooms for category type"
+                    name="number_of_room_category"
+                    value="0"
+                  />
+                </div>
+              </div>
+
+              <!-- Chidren and ault count -->
+
+              <div class="col-6">
+                <div class="form-group">
+                  <label for="Adult_count">No. of Adults</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="Adult_count"
+                    placeholder="No of Adults--"
+                    name="Adult_count"
+                    value="0"
+                  />
+                </div>
+              </div>
+
+              <div class="col-6">
+                <div class="form-group">
+                  <label for="child_count">No of Children</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="child_count"
+                    placeholder="No of Children"
+                    name="child_count"
+                    value="0"
+                  />
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="form-group">
+                  <label for="old_child_sharing">No of old children sharing</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="old_child_sharing"
+                    placeholder="No of old children sharing"
+                    name="old_child_sharing"
+                    value="0"
+                  />
+                </div>
+              </div>
+
+              <div class="col-6">
+                <div class="form-group">
+                  <label for="young_child_sharing">No of young children sharing</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="young_child_sharing"
+                    placeholder="No of young children sharing"
+                    name="young_child_sharing"
+                    value="0"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Room Request End -->
+
+        <button type="button" class="btn btn-primary" id="addRoombtn">Add Room</button>
+
+        <div class="d-flex align-items-center justify-content-between">
+          <button
+            type="button"
+            class="btn btn-primary mt-1 p-2 w-50 mr-3"
+            data-toggle="modal"
+            data-target="#exampleModalCenter"
+            id="prev-down"
+          >
+            Preview / Download
+          </button>
+          <button type="submit" class="btn btn-primary mt-1 p-2 w-50" id="sub-btn">Submit</button>
+          <!-- Button trigger modal -->
+          <button
+            type="button"
+            class="btn btn-primary mt-1 p-2 w-50 ml-3"
+            data-toggle="modal"
+            data-target="#staticBackdrop"
+            id="itni-btn"
+          >
+            Itinerary Preview/Download
+          </button>
+        </div>
+      </form>
+      <p class="bg-warning text-dark p-3 w-100" id="err">Room Type Not Found</p>
+    </div>
+
+    <!-- End of Topbar -->
+  </div>
+  <!-- Button trigger modal -->
+
+  <!-- Modal PDF -->
+  <div
+    class="modal fade"
+    id="exampleModalCenter"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+      <div
+        class="modal-content"
+        style="
+          background-image: linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)),
+            url('https://img.myloview.com/posters/creative-black-cat-logo-design-vector-stock-400-176246869.jpg');
+          background-position: center;
+          background-size: contain;
+        "
+      >
+        <div class="modal-header">
+          <div>
+            <h5 class="modal-title" id="mod_company">Company Name</h5>
+            <p class="fs-4 fw-lighter d-block mb-0 pb-0" id="mod_address">123 sesame street</p>
+            <img
+              src="https://img.myloview.com/posters/creative-black-cat-logo-design-vector-stock-400-176246869.jpg"
+              style="height: 80px; width: auto"
+            />
+          </div>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="d-flex justify-content-between px-3">
+          <p class="text-lead fw-bold">
+            Date:<span id="mod_date" class="text-lead fw-bold"> 22/June/2023</span>
+          </p>
+          <p class="text-lead fw-bold"><span id="mod_id"> #123ACV69</span></p>
+        </div>
+
+        <div class="modal-body">
+          <h5 class="fw-bold display-6" id="mhead">Trip Summary</h5>
+          <p class="py-0 my-1">
+            Date: <span id="mod_fromdt">22/05/2023</span> To
+            <span id="mod_todt">22/06/2023</span>
+          </p>
+          <p class="py-0 my-1">Total Adult travellers: <span id="mod_travAdult">5</span></p>
+          <p class="py-0 my-1">Total Child travellers: <span id="mod_travChild">10</span></p>
+          <p class="py-0 my-1">Total Rooms: <span id="mod_totalRoom">8</span></p>
+
+          <!-- <div class="text-center py-1">
               <img
                 src="https://img.myloview.com/posters/creative-black-cat-logo-design-vector-stock-400-176246869.jpg"
                 style="height: 80px; width: auto"
               />
             </div> -->
 
-            <table class="table table-striped">
-              <thead class="bg-info text-light">
-                <tr>
-                  <th scope="col">Quantity</th>
-                  <th scope="col">Item</th>
-                  <th scope="col">KES</th>
-                  <!-- <th scope="col">USD</th> -->
-                </tr>
-              </thead>
-              <tbody id="datatable">
-                <!-- <tr>
+          <table class="table table-striped">
+            <thead class="bg-info text-light">
+              <tr>
+                <th scope="col">Quantity</th>
+                <th scope="col">Item</th>
+                <th scope="col">KES</th>
+                <!-- <th scope="col">USD</th> -->
+              </tr>
+            </thead>
+            <tbody id="datatable">
+              <!-- <tr>
                   <th scope="row" id="row1">1</th>
                   <td id="row1col1"></td>
                   <td id="row1col2"></td>
@@ -419,41 +437,72 @@
                   <td id="row2col2"></td>
                 </tr>
                 <tr></tr> -->
-              </tbody>
-            </table>
+            </tbody>
+          </table>
 
-            <table class="table" id="contract">
-              <tr>
-                <td>
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Et asperiores deserunt
-                  vero nemo! Totam cum alias magni obcaecati iusto consequuntur earum excepturi
-                  nesciunt porro? Accusamus neque dolorem quasi necessitatibus iste.
-                </td>
-              </tr>
-            </table>
-          </div>
+          <table class="table" id="contract">
+            <tr>
+              <td>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Et asperiores deserunt vero
+                nemo! Totam cum alias magni obcaecati iusto consequuntur earum excepturi nesciunt
+                porro? Accusamus neque dolorem quasi necessitatibus iste.
+              </td>
+            </tr>
+          </table>
+        </div>
 
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary">Download</button>
-          </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Download</button>
         </div>
       </div>
     </div>
-    <!-- Modal ends -->
+  </div>
+  <!-- Modal ends -->
 
-    <br />
-    <!-- Footer -->
-    <footer class="sticky-footer bg-white">
-      <div class="container my-auto">
-        <div class="copyright text-center my-auto">
-          <span>Copyright &copy; Your Website 2021</span>
+  <!-- Modal2 DOCX-->
+  <div
+    class="modal fade"
+    id="staticBackdrop"
+    data-backdrop="static"
+    data-keyboard="false"
+    tabindex="-1"
+    aria-labelledby="staticBackdropLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <!-- Test Docx Start -->
+        <div id="iTin" style="text-align: center; padding: 10px">
+          <table id="docxTable" width="100%" cellspacing="4" cellpadding="3" border="2">
+            <!-- Docx data will be appended here after form submission success -->
+          </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            onclick="downloadDivAsDocx('iTin', 'my_doc')"
+          >
+            Download as .docx
+          </button>
         </div>
       </div>
-    </footer>
-    <!-- End of Footer -->
+    </div>
   </div>
-  <!-- End of Content Wrapper -->
 
+  <br />
+  <!-- Footer -->
+  <footer class="sticky-footer bg-white">
+    <div class="container my-auto">
+      <div class="copyright text-center my-auto">
+        <span>Copyright &copy; Your Website 2021</span>
+      </div>
+    </div>
+  </footer>
+  <!-- End of Footer -->
+</div>
+<!-- End of Content Wrapper -->
 
 {%endblock body%}
