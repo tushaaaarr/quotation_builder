@@ -253,6 +253,9 @@ def get_form_data(request):
         roomData = []       
         total_rooms = 0 
         total_room_data =  []
+        total_child_rate = 0
+        total_adult_rate = 0
+        days = (end_time - start_time).days
         for room in post_data['roomData']:
             total_rates = {}
             # room['old_child_sharing']
@@ -273,16 +276,21 @@ def get_form_data(request):
                     HotelRateInstance = HotelRateInstance.filter(traveller_type = "Resident")
                     total_rates['adult_rate'] = HotelRateInstance[0].adult_rate * int(room['Adult_count'])
 
-            if room['child_resident_type'] > "resident":
+            if room['child_resident_type'] == "resident":
                 if HotelRateInstance.filter(traveller_type = "Non-Resident").exists():
                     HotelRateInstance = HotelRateInstance.filter(traveller_type = "Non-Resident")
-                    total_rates['child_rate'] = HotelRateInstance[0].child_rate * room['child_count']
+                    total_rates['child_rate'] = HotelRateInstance[0].child_rate * int(room['child_count'])
             else:
                 if HotelRateInstance.filter(traveller_type = "Resident").exists():
                     HotelRateInstance = HotelRateInstance.filter(traveller_type = "Resident")
-                total_rates['child_rate'] = HotelRateInstance[0].child_rate * room['child_count']
+                    total_rates['child_rate'] = HotelRateInstance[0].child_rate * int(room['child_count'])
 
+            total_rates['adult_rate'] = total_rates['adult_rate'] * days
+            total_rates['child_rate'] = total_rates['child_rate'] * days
             total_room_data.append(total_rates)
+            for index in total_room_data:
+                total_adult_rate = total_adult_rate + index['adult_rate']
+                total_child_rate = total_child_rate + index['child_rate']
 
             # Room Request 
             QuotationRoomRequest(
@@ -313,11 +321,13 @@ def get_form_data(request):
                     "room_category":room['room_category'],
                     "room_type":room['room_type'],
                     "package_type":room['package_type'],
-                    "package_type":room['package_type'],
                     "no_of_rooms_for_category_type":room['number_of_room_category'],
                     "no_of_children_sharing":int(room['old_child_sharing']) + int(room['young_child_sharing']),
                     "old_child_sharing":room['old_child_sharing'],
                     "young_child_sharing":room['young_child_sharing'],
+                    'child_rate':total_rates['child_rate'],
+                    'adult_rate':total_rates['adult_rate'],
+                    'total_child_adult': total_rates['child_rate'] + total_rates['adult_rate']
                 }
             )
 
@@ -368,10 +378,7 @@ def get_form_data(request):
         'bedroom_pic':"127.0.0.1:8000/uploads/" + str(hotel_instance.bedroom_pic),
         'diningroom_pic':"127.0.0.1:8000/uploads/" + str(hotel_instance.diningroom_pic),
         })
-
         itinery_data['todal_days_details'] = day_lst
-        print(roomData)
-        print('total_room_data',total_room_data)
         OpData = {   
             "country":country,
             "hotel_name":hotel_instance.hotel_name,
@@ -390,10 +397,12 @@ def get_form_data(request):
             'date_to':post_data['date_to'],
             'roomData':roomData,
             "total_rooms":total_rooms,
-            "itinery_data":itinery_data
+            "itinery_data":itinery_data,
+            "total_adult_rate":total_adult_rate,
+            "total_child_rate":total_child_rate,
+            "total_child_adult":total_child_rate + total_adult_rate,
         }
         print(OpData)
-        
         return JsonResponse(OpData,safe=False)
 
 

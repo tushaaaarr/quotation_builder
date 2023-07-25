@@ -105,7 +105,7 @@
     <!-- Add Room -->
     <script>
 
-                console.log()
+
 
               // Checking dates Availabilty Start=====>
 
@@ -189,8 +189,14 @@
                         room_category: document.querySelector(`#room_category${incount}`).value,
                         room_type: document.querySelector(`#room_type${incount}`).value,
                         number_of_room_category: document.querySelector(`#number_of_room_category${incount}`).value,
+
                         Adult_count: document.querySelector(`#Adult_count${incount}`).value,
+                        adult_resident_type: document.querySelector(`#adult_resident_type${incount}`).value,
+
                         child_count: document.querySelector(`#child_count${incount}`).value,
+                        child_resident_type: document.querySelector(`#child_resident_type${incount}`).value,
+
+
                         old_child_sharing: document.querySelector(`#old_child_sharing${incount}`).value,
                         young_child_sharing: document.querySelector(`#young_child_sharing${incount}`).value,
                         // Add other room data fields here
@@ -228,7 +234,9 @@
                         room_type: document.querySelector(`#room_type${incount}`).value,
                         number_of_room_category: document.querySelector(`#number_of_room_category${incount}`).value,
                         Adult_count: document.querySelector(`#Adult_count${incount}`).value,
+                        adult_resident_type: document.querySelector(`#adult_resident_type${incount}`).value,
                         child_count: document.querySelector(`#child_count${incount}`).value,
+                        child_resident_type: document.querySelector(`#child_resident_type${incount}`).value,
                         old_child_sharing: document.querySelector(`#old_child_sharing${incount}`).value,
                         young_child_sharing: document.querySelector(`#young_child_sharing${incount}`).value,
                         // Add other room data fields here
@@ -245,7 +253,9 @@
                     for (const [name, value] of formData.entries()) {
                       if (
                         !name.includes("Adult_count") &&
+                        !name.includes("adult_resident_type") &&
                         !name.includes("child_count") &&
+                        !name.includes("child_resident_type") &&
                         !name.includes("number_of_room_category") &&
                         !name.includes("old_child_sharing") &&
                         !name.includes("package_type") &&
