@@ -287,10 +287,14 @@ def get_form_data(request):
 
             total_rates['adult_rate'] = total_rates['adult_rate'] * days
             total_rates['child_rate'] = total_rates['child_rate'] * days
+            
             total_room_data.append(total_rates)
-            for index in total_room_data:
-                total_adult_rate = total_adult_rate + index['adult_rate']
-                total_child_rate = total_child_rate + index['child_rate']
+
+
+            total_adult_rate = total_adult_rate + total_rates['adult_rate'] 
+            total_child_rate = total_child_rate + total_rates['child_rate'] 
+
+
 
             # Room Request 
             QuotationRoomRequest(
@@ -404,7 +408,6 @@ def get_form_data(request):
         }
         print(OpData)
         return JsonResponse(OpData,safe=False)
-
 
 @login_required
 @csrf_exempt
