@@ -252,17 +252,38 @@ def get_form_data(request):
         # Room request
         roomData = []       
         total_rooms = 0 
+        total_room_data =  []
         for room in post_data['roomData']:
-            room['Adult_count']
-            room['child_count']
-            room['old_child_sharing']
-            room['young_child_sharing']
+            total_rates = {}
+            # room['old_child_sharing']
+            # room['young_child_sharing']
             HotelRateInstance = HotelRate.objects.filter(hotel_name = hotel_instance)
             HotelRateInstance = HotelRateInstance.filter(
             package_type = room['package_type'],
             room_type = room['room_type'],
-            room_category = room['room_category'],
-            ) 
+            room_category = room['room_category']
+            )
+
+            if room['adult_resident_type'] == 'resident':
+                if HotelRateInstance.filter(traveller_type = "Non-Resident").exists():
+                    HotelRateInstance = HotelRateInstance.filter(traveller_type = "Non-Resident")
+                    total_rates['adult_rate'] = HotelRateInstance[0].adult_rate * int(room['Adult_count'])
+            else:
+                if HotelRateInstance.filter(traveller_type = "Resident").exists():
+                    HotelRateInstance = HotelRateInstance.filter(traveller_type = "Resident")
+                    total_rates['adult_rate'] = HotelRateInstance[0].adult_rate * int(room['Adult_count'])
+
+            if room['child_resident_type'] > "resident":
+                if HotelRateInstance.filter(traveller_type = "Non-Resident").exists():
+                    HotelRateInstance = HotelRateInstance.filter(traveller_type = "Non-Resident")
+                    total_rates['child_rate'] = HotelRateInstance[0].child_rate * room['child_count']
+            else:
+                if HotelRateInstance.filter(traveller_type = "Resident").exists():
+                    HotelRateInstance = HotelRateInstance.filter(traveller_type = "Resident")
+                total_rates['child_rate'] = HotelRateInstance[0].child_rate * room['child_count']
+
+            total_room_data.append(total_rates)
+
             # Room Request 
             QuotationRoomRequest(
                 quotation_id = Quotation_ins,
@@ -326,7 +347,6 @@ def get_form_data(request):
                 HotelRateInstance = HotelRateInstance.filter(traveller_type = "Resident")
                 rates['child_res'] = HotelRateInstance[0].child_rate * int(child_res)
 
- 
         # Itinery data
         itinery_data = {
             'date_from':post_data['date_frm'],
@@ -334,6 +354,7 @@ def get_form_data(request):
             'area':Quotation_ins.area,
             'country':Quotation_ins.country,
             }
+        
         day_lst = []
         days = (end_time - start_time).days
         day_lst.append({
@@ -347,8 +368,10 @@ def get_form_data(request):
         'bedroom_pic':"127.0.0.1:8000/uploads/" + str(hotel_instance.bedroom_pic),
         'diningroom_pic':"127.0.0.1:8000/uploads/" + str(hotel_instance.diningroom_pic),
         })
+
         itinery_data['todal_days_details'] = day_lst
-        print(itinery_data)
+        print(roomData)
+        print('total_room_data',total_room_data)
         OpData = {   
             "country":country,
             "hotel_name":hotel_instance.hotel_name,
@@ -369,7 +392,10 @@ def get_form_data(request):
             "total_rooms":total_rooms,
             "itinery_data":itinery_data
         }
+        print(OpData)
+        
         return JsonResponse(OpData,safe=False)
+
 
 @login_required
 @csrf_exempt
@@ -382,8 +408,8 @@ def create_quatation_new(request):
             "date_applicable_from":str(hotelrate.date_applicable_from),
             "date_applicable_to":str(hotelrate.date_applicable_to)}
             )
-
         hotels = Hotel.objects.all()
+        
         hotelnamedict = {}
         for i in hotels:
             if i.country not in hotelnamedict:
