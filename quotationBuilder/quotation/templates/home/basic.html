@@ -3,18 +3,11 @@
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <meta name="description" content="" />
     <meta name="author" content="" />
     <title>Dashboard</title>
-    <link
-      href="vendor/fontawesome-free/css/all.min.css"
-      rel="stylesheet"
-      type="text/css"
-    />
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css" />
     <link
       href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
       rel="stylesheet"
@@ -33,10 +26,7 @@
         id="accordionSidebar"
       >
         <!-- Sidebar - Brand -->
-        <a
-          class="sidebar-brand d-flex align-items-center justify-content-center"
-          href="/"
-        >
+        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/">
           <div class="sidebar-brand-icon rotate-n-15">
             <i class="fas fa-laugh-wink"></i>
           </div>
@@ -49,14 +39,18 @@
         <li class="nav-item active">
           <a class="nav-link" href="{% url 'login' %}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
-            <span>Login</span></a></li>
+            <span>Login</span></a
+          >
+        </li>
 
-            <li class="nav-item active">
-              <a class="nav-link" href="{% url 'register' %}">
-                <i class="fas fa-fw fa-tachometer-alt"></i>
-                <span>Register</span></a></li>
-        
-            <li class="nav-item active">
+        <li class="nav-item active">
+          <a class="nav-link" href="{% url 'register' %}">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Register</span></a
+          >
+        </li>
+
+        <li class="nav-item active">
           <a
             class="nav-link collapsed"
             href="#"
@@ -74,18 +68,10 @@
             data-parent="#accordionSidebar"
           >
             <div class="bg-white py-2 collapse-inner rounded">
-              <a class="collapse-item" href="/hotel/list"
-                ><span>Hotels</span></a
-              >
-              <a class="collapse-item" href="/hotelrate/list"
-                ><span>Hotel Rates</span></a
-              >
-              <a class="collapse-item" href="/hotel/add"
-                ><span>Add Hotel</span></a
-              >
-              <a class="collapse-item" href="/hotelrate/add"
-                ><span>Add HotelRate</span></a
-              >
+              <a class="collapse-item" href="/hotel/list"><span>Hotels</span></a>
+              <a class="collapse-item" href="/hotelrate/list"><span>Hotel Rates</span></a>
+              <a class="collapse-item" href="/hotel/add"><span>Add Hotel</span></a>
+              <a class="collapse-item" href="/hotelrate/add"><span>Add HotelRate</span></a>
             </div>
           </div>
         </li>
@@ -108,12 +94,8 @@
             data-parent="#accordionSidebar"
           >
             <div class="bg-white py-2 collapse-inner rounded">
-              <a class="collapse-item" href="/company/list"
-                ><span>Companies</span></a
-              >
-              <a class="collapse-item" href="/company/add"
-                ><span>Add Company</span></a
-              >
+              <a class="collapse-item" href="/company/list"><span>Companies</span></a>
+              <a class="collapse-item" href="/company/add"><span>Add Company</span></a>
             </div>
           </div>
         </li>
@@ -340,6 +322,7 @@
                          document.getElementById("mod_company").innerHTML = fdata.hotel_name;
                          document.getElementById("mod_address").innerHTML = fdata.area + "," + fdata.country;
                          document.getElementById("mod_date").innerHTML = tdate.toLocaleDateString();
+                         document.getElementById("mod_id").innerHTML = fdata.quotation_id;
                          document.getElementById("mod_fromdt").innerHTML = fdata.date_frm;
                          document.getElementById("mod_todt").innerHTML = fdata.date_to;
                          document.getElementById("mod_travAdult").innerHTML = fdata.total_adult_travellers;
@@ -370,14 +353,14 @@
                           //  `${ini.young_child_sharing_rate?ini.young_child_sharing_rate+'(Total Young childern sharing rate) x'+fdata.itinery_data.todal_days_details[0].total_days+ '(Total Days)  =  '+ini.young_child_sharing_rate*fdata.itinery_data.todal_days_details[0].total_days :''}`+ `<br/>` +
                           //  `${ini.young_child_sharing_rate?ini.old_child_sharing_rate+'(Total Old childern sharing rate) x'+fdata.itinery_data.todal_days_details[0].total_days+ '(Total Days)  =  '+ini.old_child_sharing_rate*fdata.itinery_data.todal_days_details[0].total_days :''}`;
                            let td3 = document.createElement("td");
-                           td3.innerHTML = ini.total_child_adult;
-                           // let td4 = document.createElement("td");
-                           // td4.innerHTML = fdata.adult_res;
+                           td3.innerHTML = fdata.currency=="KES"?ini.total_child_adult:"-";
+                           let td4 = document.createElement("td");
+                           td4.innerHTML = fdata.currency!="KES"?ini.total_child_adult:"-";
 
                            tr.appendChild(td1);
                            tr.appendChild(td2);
                            tr.appendChild(td3);
-                           // tr.appendChild(td4);
+                           tr.appendChild(td4);
 
                            document.getElementById("datatable").appendChild(tr);
 
@@ -387,13 +370,14 @@
                            let ttd2 = document.createElement("td");
                            ttd2.innerHTML = "";
                            let ttd3 = document.createElement("td");
-                           ttd3.innerHTML = fdata.total_child_adult;
-                           // let ttd4 = document.createElement("td");
-                           // td4.innerHTML = fdata.adult_res;
+                           ttd3.innerHTML = fdata.currency=="KES"?fdata.total_child_adult:"-";
+                           let ttd4 = document.createElement("td");
+                           ttd4.innerHTML = fdata.currency!="KES"?fdata.total_child_adult:"-";
 
                            ttr.appendChild(ttd1);
                            ttr.appendChild(ttd2);
                            ttr.appendChild(ttd3);
+                           ttr.appendChild(ttd4);
                            console.log(fdata.roomData.length)
                            console.log(i)
                            if(fdata.roomData.length==i+1){ console.log("here"); document.getElementById("datatable").appendChild(ttr);}
@@ -414,12 +398,14 @@
                            compTD = document.createElement('td')
                            tripTD = document.createElement('td')
                            compTD.align = "center";
+                           compTD.bgColor = "#404040";
+
                            tripTD.align = "center";
 
-                           compTD.innerHTML = `<h2>${fdata.hotel_name}</h2>`;
+                           compTD.innerHTML = `<h4><font color="white">${fdata.hotel_name}</font></h4>`;
                            companyName.appendChild(compTD);
 
-                           tripTD.innerHTML = `<h2>Trip Name: 7 days in Savannah</h2>`;
+                           tripTD.innerHTML = `<h5>Trip Name: 7 days in Savannah</h5>`;
                            tripName.appendChild(tripTD);
 
                          dParent.append(companyName, tripName)
@@ -437,6 +423,8 @@
                            let hotelTD = document.createElement("td");
                            let hoteldescTD = document.createElement("td");
                            hotelTD.align="center";
+                           hotelTD.bgColor = "#dddddd";
+
                            hoteldescTD.align="center";
 
 
@@ -444,8 +432,8 @@
                              cpic.src="http://"+ini.receptionroom_pic;
 
                              hotelcpicTD.appendChild(cpic);
-                             hotelTD.innerHTML = `<h3>Day ${i+1}: ${ini.hotel_name}</h3>`;
-                             hoteldescTD.innerHTML = `<h3>${ini.description_first_day}</h3>`
+                             hotelTD.innerHTML = `<h5><font color="#121212"> Day ${i+1}: ${ini.hotel_name}</font></h5>`;
+                             hoteldescTD.innerHTML = `<p>${ini.description_first_day}</p>`
 
                              hotelName.appendChild(hotelTD);
                              hotelDesc.appendChild(hoteldescTD);
@@ -468,6 +456,7 @@
                            hoteldescTD = document.createElement("td");
 
                              hotelTD.align="center";
+                             hotelTD.bgColor = "#dddddd";
                              hoteldescTD.align="center";
 
                              cpic.height="160";
@@ -475,8 +464,8 @@
 
                              hotelcpicTD.appendChild(cpic);
 
-                             hotelTD.innerHTML = `<h3>Day ${n+2}: ${ini.hotel_name}</h3>`;
-                             hoteldescTD.innerHTML = `<h3>${ini.description_full_day}</h3>`
+                             hotelTD.innerHTML = `<h5><font color="#121212">Day ${n+2}: ${ini.hotel_name}</font></h5>`;
+                             hoteldescTD.innerHTML = `<p>${ini.description_full_day}</p>`
 
                              hotelName.appendChild(hotelTD);
                              hotelDesc.appendChild(hoteldescTD);
@@ -498,6 +487,7 @@
                              hotelTD = document.createElement("td");
                              hoteldescTD = document.createElement("td");
                                hotelTD.align="center";
+                               hotelTD.bgColor = "#dddddd";
                                hoteldescTD.align="center";
 
                              cpic.height="160";
@@ -505,8 +495,8 @@
 
                              hotelcpicTD.appendChild(cpic);
 
-                             hotelTD.innerHTML = `<h3>Day ${ini.total_days}: ${ini.hotel_name}</h3>`;
-                             hoteldescTD.innerHTML = `<h3>${ini.description_last_day}</h3>`
+                             hotelTD.innerHTML = `<h5><font color="#121212">Day ${ini.total_days}: ${ini.hotel_name}</font></h5>`;
+                             hoteldescTD.innerHTML = `<p>${ini.description_last_day}</p>`
 
                              hotelName.appendChild(hotelTD);
                              hotelDesc.appendChild(hoteldescTD);
