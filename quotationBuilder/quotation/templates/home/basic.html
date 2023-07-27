@@ -3,11 +3,18 @@
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
     <meta name="description" content="" />
     <meta name="author" content="" />
     <title>Dashboard</title>
-    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css" />
+    <link
+      href="vendor/fontawesome-free/css/all.min.css"
+      rel="stylesheet"
+      type="text/css"
+    />
     <link
       href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
       rel="stylesheet"
@@ -26,7 +33,10 @@
         id="accordionSidebar"
       >
         <!-- Sidebar - Brand -->
-        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/">
+        <a
+          class="sidebar-brand d-flex align-items-center justify-content-center"
+          href="/"
+        >
           <div class="sidebar-brand-icon rotate-n-15">
             <i class="fas fa-laugh-wink"></i>
           </div>
@@ -39,44 +49,73 @@
         <li class="nav-item active">
           <a class="nav-link" href="{% url 'login' %}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
-            <span>Login</span></a
+            <span>Login</span></a></li>
+
+            <li class="nav-item active">
+              <a class="nav-link" href="{% url 'register' %}">
+                <i class="fas fa-fw fa-tachometer-alt"></i>
+                <span>Register</span></a></li>
+        
+            <li class="nav-item active">
+          <a
+            class="nav-link collapsed"
+            href="#"
+            data-toggle="collapse"
+            data-target="#collapseTwo"
+            aria-expanded="true"
+            aria-controls="collapseTwo"
           >
+            <span>Hotels</span>
+          </a>
+          <div
+            id="collapseTwo"
+            class="collapse"
+            aria-labelledby="headingTwo"
+            data-parent="#accordionSidebar"
+          >
+            <div class="bg-white py-2 collapse-inner rounded">
+              <a class="collapse-item" href="/hotel/list"
+                ><span>Hotels</span></a
+              >
+              <a class="collapse-item" href="/hotelrate/list"
+                ><span>Hotel Rates</span></a
+              >
+              <a class="collapse-item" href="/hotel/add"
+                ><span>Add Hotel</span></a
+              >
+              <a class="collapse-item" href="/hotelrate/add"
+                ><span>Add HotelRate</span></a
+              >
+            </div>
+          </div>
         </li>
+
         <li class="nav-item active">
-          <a class="nav-link" href="/hotel/list">
-            <i class="fas fa-fw fa-tachometer-alt"></i>
-            <span>Hotels</span></a
+          <a
+            class="nav-link collapsed"
+            href="#"
+            data-toggle="collapse"
+            data-target="#collapseCompany"
+            aria-expanded="true"
+            aria-controls="collapseCompany"
           >
-        </li>
-        <li class="nav-item active">
-          <a class="nav-link" href="/hotelrate/list">
-            <i class="fas fa-fw fa-tachometer-alt"></i>
-            <span>Hotel Rates</span></a
+            <span>Company</span></a
           >
-        </li>
-        <li class="nav-item active">
-          <a class="nav-link" href="/company/list">
-            <i class="fas fa-fw fa-tachometer-alt"></i>
-            <span>Companies</span></a
+          <div
+            id="collapseCompany"
+            class="collapse"
+            aria-labelledby="headingTwo"
+            data-parent="#accordionSidebar"
           >
-        </li>
-        <li class="nav-item active">
-          <a class="nav-link" href="/hotel/add">
-            <i class="fas fa-fw fa-tachometer-alt"></i>
-            <span>Add Hotel</span></a
-          >
-        </li>
-        <li class="nav-item active">
-          <a class="nav-link" href="/hotelrate/add">
-            <i class="fas fa-fw fa-tachometer-alt"></i>
-            <span>Add HotelRate</span></a
-          >
-        </li>
-        <li class="nav-item active">
-          <a class="nav-link" href="/company/add">
-            <i class="fas fa-fw fa-tachometer-alt"></i>
-            <span>Add Company</span></a
-          >
+            <div class="bg-white py-2 collapse-inner rounded">
+              <a class="collapse-item" href="/company/list"
+                ><span>Companies</span></a
+              >
+              <a class="collapse-item" href="/company/add"
+                ><span>Add Company</span></a
+              >
+            </div>
+          </div>
         </li>
         <li class="nav-item active">
           <a class="nav-link" href="/create-quotation">

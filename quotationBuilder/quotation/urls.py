@@ -14,6 +14,7 @@ urlpatterns = [
     # path('register/', quotation_views.RegisterView.as_view(), name='auth_register'),
     
     path('login/', views.login, name='login'),
+    path('register/', views.register, name='register'),
     path('logout/', views.logout, name='logout'),
     path('dashboard', views.dashboard, name='dashboard'),
 
