@@ -162,7 +162,7 @@ def update_hotel(request, pk):
 @user_passes_test(lambda u: u.employee.hotel_staff == True, login_url='login')
 def hotel_list(request):
     hotels = Hotel.objects.all()
-    return render(request, 'quotation/hotel_list.html', {'hotels': hotels})
+    return render(request, 'home/hotel_list.html', {'hotels': hotels})
 
 
 @login_required
