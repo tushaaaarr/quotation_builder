@@ -140,7 +140,7 @@ def add_hotel(request):
             return redirect('hotel_list')
     else:
         form = HotelForm()
-    return render(request, 'quotation/add_hotel.html', {'form': form})
+    return render(request, 'home/add_hotel.html', {'form': form})
 
 
 @login_required
@@ -176,14 +176,14 @@ def add_company(request):
             return redirect('company_list')
     else:
         form = CompanyForm()
-    return render(request, 'quotation/add_company.html', {'form': form})
+    return render(request, 'home/add_company.html', {'form': form})
 
 
 @login_required
 @user_passes_test(lambda u: u.employee.company_staff == True, login_url='login')
 def company_list(request):
     companies = Company.objects.all()
-    return render(request, 'quotation/company_list.html', {'companies': companies})
+    return render(request, 'home/company_list.html', {'companies': companies})
 
 
 @login_required
@@ -197,14 +197,14 @@ def add_hotel_rate(request):
             return redirect('hotelrate_list')
     else:
         form = HotelRateForm()
-    return render(request, 'quotation/add_hotel_rate.html', {'form': form})
+    return render(request, 'home/add_hotel_rate.html', {'form': form})
 
 
 @login_required
 @user_passes_test(lambda u: u.employee.hotel_staff == True, login_url='login')
 def hotelrate_list(request):
     hotelrates = HotelRate.objects.all()
-    return render(request, 'quotation/hotelrate_list.html', {'hotelrates': hotelrates})
+    return render(request, 'home/hotelrate_list.html', {'hotelrates': hotelrates})
 
 
 @login_required

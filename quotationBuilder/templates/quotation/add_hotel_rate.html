@@ -1,10 +1,12 @@
 {% extends 'partials/base.html' %}
 
 {% block content %}
+<div class='container mt-3'>
   <h1>Add Hotel Rate</h1>
   <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">Add Hotel Rate</button>
   </form>
+</div>
 {% endblock %}

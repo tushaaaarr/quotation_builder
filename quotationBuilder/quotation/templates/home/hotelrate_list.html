@@ -1,0 +1,18 @@
+{% extends './basic.html' %} {% load static %} {% block title %} Quotation{%endblock title%} 
+{%block css %} {%endblock css %} {% block body %}
+
+<!-- Content Wrapper -->
+<div id="content-wrapper" class="d-flex flex-column">
+  <div class="container mt-5">
+    <h1>Hotel Rates List</h1>
+  <ul>
+      {% for hotelrate in hotelrates %}
+      <li>
+        {{hotelrate.hotel_name}} {{hotelrate.rate_type}} {{hotelrate.rate_season}} {{hotelrate.room_category}} {{hotelrate.traveller_type}} {{hotelrate.date_applicable_from}} {{hotelrate.date_applicable_to}}
+      </li>
+      {% endfor %}
+  </ul>
+  </div>
+</div>
+
+{%endblock body%}

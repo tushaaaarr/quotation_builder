@@ -1,19 +1,16 @@
-{% extends './basic.html' %} {% load static %} {% block title %} Quotation {%endblock title%}
-{%block css %} {%endblock css %} {% block body %}
+{% extends './basic.html' %} {% load static %} {% block title %} Quotation
+{%endblock title%} {%block css %} {%endblock css %} {% block body %}
 
 <!-- Page Wrapper -->
 <!-- Content Wrapper -->
 <div id="content-wrapper" class="d-flex flex-column">
-
-<div class='container'>
-    <h1>Hotel List</h1>
+  <div class="container">
     <ul>
-        {% for hotel in hotels %}
-        <li>{{ hotel.hotel_name }}</li>
-        {% endfor %}
+      {% for hotel in hotels %}
+      <li>{{ hotel.hotel_name }}</li>
+      {% endfor %}
     </ul>
-
-</div>
+  </div>
 </div>
 
 {%endblock body%}
