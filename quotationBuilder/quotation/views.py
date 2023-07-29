@@ -265,7 +265,6 @@ def get_form_data(request):
             "company_id":company.company_id,
             "company_name":company.company_name,
         })
-
         date_frm = post_data['date_frm'].split("-")
         date_to = post_data['date_to'].split("-")
         start_time = datetime.datetime(int(date_frm[0]), int(date_frm[1]), int(date_frm[2]))
@@ -469,7 +468,8 @@ def get_form_data(request):
             "total_child_rate":total_child_rate,
             "total_child_adult":total_child_rate + total_adult_rate,
             'currency':HotelRateInstance[0].rate_currency,
-            "company_details":company_details
+            "company_details":company_details,
+            'quotation_id':Quotation_ins.quotation_id
         }
         print(OpData)
         return JsonResponse(OpData,safe=False)
