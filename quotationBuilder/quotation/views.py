@@ -252,10 +252,25 @@ def get_form_data(request):
         resp = request.body
         body_unicode = resp.decode('utf-8') 
         post_data = json.loads(body_unicode)
+        # Company data
+        company_details = []
+        employee = Employee.objects.get(username = request.user)
+        company = Company.objects.get(company_name = employee.company.company_name)
+        company_details.append({
+            "company_logo":str(company.company_logo),
+            "company_logo_watermark":str(company.company_logo_watermark),
+            "company_footer":str(company.company_footer),
+            "company_header":str(company.company_header),
+            "company_description":str(company.company_description),
+            "company_id":company.company_id,
+            "company_name":company.company_name,
+        })
+
         date_frm = post_data['date_frm'].split("-")
         date_to = post_data['date_to'].split("-")
         start_time = datetime.datetime(int(date_frm[0]), int(date_frm[1]), int(date_frm[2]))
         end_time = datetime.datetime(int(date_to[0]), int(date_to[1]), int(date_to[2]))
+
         country = post_data['country']
         area  = post_data['state']
         hotel_Id  = post_data['hotel_name']
@@ -319,14 +334,14 @@ def get_form_data(request):
                         total_rates['child_rate'] = HotelRateInstance[0].child_rate * int(room['child_count'])
             else:
                 total_rates['child_rate'] = 0
-            
+
             # Child Sharing
             if int(room['young_child_sharing']) > 0 or int(room['old_child_sharing']) > 0:
                 if int(room['young_child_sharing']) > 0:
                     young_child_rate = HotelRateInstance[0].young_child_sharing_rate * int(room['young_child_sharing'])
                 else:
                     young_child_rate = 0
-
+            
                 if int(room['old_child_sharing']) > 0:
                     old_child_rate = HotelRateInstance[0].old_child_sharing_rate* float(room['old_child_sharing'])
                 else:
@@ -453,7 +468,8 @@ def get_form_data(request):
             "total_adult_rate":total_adult_rate,
             "total_child_rate":total_child_rate,
             "total_child_adult":total_child_rate + total_adult_rate,
-            'currency':HotelRateInstance[0].rate_currency
+            'currency':HotelRateInstance[0].rate_currency,
+            "company_details":company_details
         }
         print(OpData)
         return JsonResponse(OpData,safe=False)
@@ -461,53 +477,54 @@ def get_form_data(request):
 @login_required
 @csrf_exempt
 def create_quatation_new(request):
-    if is_company_staff(request,request.user):
-        hotel_rates = HotelRate.objects.all()
-        available_dates = []
-        for hotelrate in hotel_rates:
-            available_dates.append({
-            "date_applicable_from":str(hotelrate.date_applicable_from),
-            "date_applicable_to":str(hotelrate.date_applicable_to)}
-            )
-        hotels = Hotel.objects.all() 
-        hotelnamedict = {}
-        for i in hotels:
-            if i.country not in hotelnamedict:
-                hotelnamedict[i.country] = {}
-            if i.area not in hotelnamedict[i.country]:
-                hotelnamedict[i.country][i.area] = []
-            hotelnamedict[i.country][i.area].append((i.hotel_name,i.id))
-        jsonData = {"country":[]}
-        for country,country_data in hotelnamedict.items():
-            states_data = [{
-                "name" : state,
-                "id" : state,
-                "hotels" : [{"name":hotel,"id":hotel_id} for hotel,hotel_id in state_data]
-            } for state,state_data in country_data.items()]
-            new_country_data = {"name":country,"id":country,"states":states_data}
-            jsonData["country"].append(new_country_data)
+    if Employee.objects.filter(username = request.user).exists():
+        if Employee.objects.get(username = request.user).company_staff:
+            hotel_rates = HotelRate.objects.all()
+            available_dates = []
+            for hotelrate in hotel_rates:
+                available_dates.append({
+                "date_applicable_from":str(hotelrate.date_applicable_from),
+                "date_applicable_to":str(hotelrate.date_applicable_to)}
+                )
+            hotels = Hotel.objects.all() 
+            hotelnamedict = {}
+            for i in hotels:
+                if i.country not in hotelnamedict:
+                    hotelnamedict[i.country] = {}
+                if i.area not in hotelnamedict[i.country]:
+                    hotelnamedict[i.country][i.area] = []
+                hotelnamedict[i.country][i.area].append((i.hotel_name,i.id))
+            jsonData = {"country":[]}
+            for country,country_data in hotelnamedict.items():
+                states_data = [{
+                    "name" : state,
+                    "id" : state,
+                    "hotels" : [{"name":hotel,"id":hotel_id} for hotel,hotel_id in state_data]
+                } for state,state_data in country_data.items()]
+                new_country_data = {"name":country,"id":country,"states":states_data}
+                jsonData["country"].append(new_country_data)
 
-        main_form = QuotationMainRequestForm()
-        room_formset = QuotationRoomRequestFormSet()
-        hotel_dict = {}
-        hotel_dict['area']= list(Hotel.objects.values_list('area', flat=True).distinct())
-        hotel_dict['country']=list(Hotel.objects.values_list('country', flat=True).distinct())
-        
-        room_dict = {}
-        room_dict['package_type'] = list(HotelRate.objects.values_list('package_type', flat=True).distinct())
-        room_dict['room_category'] = list(HotelRate.objects.values_list('room_category', flat=True).distinct())
-        room_dict['room_type'] = list(HotelRate.objects.values_list('room_type', flat=True).distinct())
-        context = {
-            'main_form': main_form,
-            'room_formset': room_formset,
-            'hotels':hotels,
-            "hotel_dict":hotel_dict,
-            "room_dict":room_dict,
-            "available_dates":available_dates,
-            "jsonData":jsonData 
-        }
+            main_form = QuotationMainRequestForm()
+            room_formset = QuotationRoomRequestFormSet()
+            hotel_dict = {}
+            hotel_dict['area']= list(Hotel.objects.values_list('area', flat=True).distinct())
+            hotel_dict['country']=list(Hotel.objects.values_list('country', flat=True).distinct())
+            
+            room_dict = {}
+            room_dict['package_type'] = list(HotelRate.objects.values_list('package_type', flat=True).distinct())
+            room_dict['room_category'] = list(HotelRate.objects.values_list('room_category', flat=True).distinct())
+            room_dict['room_type'] = list(HotelRate.objects.values_list('room_type', flat=True).distinct())
+            context = {
+                'main_form': main_form,
+                'room_formset': room_formset,
+                'hotels':hotels,
+                "hotel_dict":hotel_dict,
+                "room_dict":room_dict,
+                "available_dates":available_dates,
+                "jsonData":jsonData 
+            }
 
-        return render(request,'home/quotation_form.html',context=context)
+            return render(request,'home/quotation_form.html',context=context)
 
     return HttpResponse('You have not access for this page')
 
