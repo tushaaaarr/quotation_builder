@@ -2,9 +2,6 @@
 {%block css %} {%endblock css %} {% block body %}
 
 <style>
-  #mod_date {
-    color: red !important;
-  }
   #err,
   #chkdates {
     display: none;
@@ -408,9 +405,9 @@
       <div class="modal-content" id="watermarkImg" style="color: black !important">
         <div class="modal-header" style="color: black !important">
           <div>
-            <h5 class="modal-title" id="mod_company">Company Name</h5>
-            <p class="fs-4 fw-lighter d-block mb-0 pb-0" id="mod_address">123 sesame street</p>
-            <img id="headerImg" src="" style="height: 80px; width: auto" />
+            <!-- <h5 class="modal-title" id="mod_company">Company Name</h5>
+            <p class="fs-4 fw-lighter d-block mb-0 pb-0" id="mod_address">123 sesame street</p> -->
+            <img id="headerImg" src="" style="height: 200px; max-width: 100%" />
           </div>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
@@ -420,7 +417,7 @@
           <p class="text-lead fw-bold">
             Date:<span id="mod_date" class="text-lead fw-bold"> 22/June/2023</span>
           </p>
-          <p class="text-lead fw-bold"><span id="mod_id"> #123ACV69</span></p>
+          <p class="text-lead fw-bold">Quotation ID : <span id="mod_id"> #123ACV69</span></p>
         </div>
 
         <div class="modal-body" style="color: black">
@@ -429,6 +426,7 @@
             Date: <span id="mod_fromdt">22/05/2023</span> To
             <span id="mod_todt">22/06/2023</span>
           </p>
+          <p class="py-0 my-1">Hotel Name and Address: <span id="mod_HandA">kenya</span></p>
           <p class="py-0 my-1">Total Adult travellers: <span id="mod_travAdult">5</span></p>
           <p class="py-0 my-1">Total Child travellers: <span id="mod_travChild">10</span></p>
           <p class="py-0 my-1">Total Rooms: <span id="mod_totalRoom">8</span></p>
@@ -443,8 +441,8 @@
           <table class="table table-striped" style="color: black">
             <thead class="bg-info text-light">
               <tr>
-                <th scope="col">Quantity</th>
-                <th scope="col">Item</th>
+                <th scope="col">No. of Rooms</th>
+                <th scope="col">Description</th>
                 <th scope="col">KES</th>
                 <th scope="col">USD</th>
               </tr>
@@ -478,7 +476,7 @@
           <table class="table" id="footer">
             <tr>
               <td class="text-center w-100">
-                <img id="footerImg" src="" style="height: 200px; width: auto" />
+                <img id="footerImg" src="" style="height: 200px; max-width: 100%" />
               </td>
             </tr>
           </table>

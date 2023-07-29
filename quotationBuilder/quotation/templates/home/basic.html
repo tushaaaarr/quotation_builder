@@ -322,10 +322,12 @@
                          let tdate = new Date();
                         // imgs watermark, header, footer start===>
                         document.getElementById("watermarkImg").style = `
-                          background-image: linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)),
+                          background-image: linear-gradient(rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.1)),
                             url('http://127.0.0.1:8000/uploads/${fdata.company_details[0].company_logo_watermark}');
                           background-position: center;
-                          background-size: contain`;
+                          background-size: contain;
+                          background-repeat: no-repeat;
+                          `;
 
                         document.getElementById("headerImg").src = `http://127.0.0.1:8000/uploads/${fdata.company_details[0].company_header}`;
 
@@ -333,8 +335,9 @@
 
                         // imgs end ===>
 
-                         document.getElementById("mod_company").innerHTML = fdata.company_details[0].company_name;
-                         document.getElementById("mod_address").innerHTML = fdata.area + "," + fdata.country;
+                        //  document.getElementById("mod_company").innerHTML = fdata.company_details[0].company_name;
+                        //  document.getElementById("mod_address").innerHTML = fdata.hotel_name +", "+ fdata.area + "," + fdata.country;
+                         document.getElementById("mod_HandA").innerHTML =fdata.hotel_name+ ", " + fdata.area + ", " + fdata.country;
                          document.getElementById("mod_date").innerHTML = tdate.toLocaleDateString();
                          document.getElementById("mod_id").innerHTML = fdata.quotation_id;
                          document.getElementById("mod_fromdt").innerHTML = fdata.date_frm;
@@ -408,15 +411,19 @@
                            // companyName.style="margin-bottom:10px; padding:10px; border: 2px solid rgba(0,0,0,0.5)";
                            // tripName.style="margin-bottom:10px; padding:10px; border: 2px solid rgba(0,0,0,0.5)";
 
-                           let compTD, tripTD;
+                           let compTD, tripTD, compTDImg
                            compTD = document.createElement('td')
                            tripTD = document.createElement('td')
                            compTD.align = "center";
-                           compTD.bgColor = "#404040";
+                           compTD.bgColor = "white";
+                           compTDImg = document.createElement('img')
+                           compTDImg.height="160";
+                           compTDImg.width="600";
+                           compTDImg.src=`http://127.0.0.1:8000/uploads/${fdata.company_details[0].company_header}`;
 
                            tripTD.align = "center";
 
-                           compTD.innerHTML = `<h4><font color="white">${fdata.hotel_name}</font></h4>`;
+                           compTD.appendChild(compTDImg);
                            companyName.appendChild(compTD);
 
                            tripTD.innerHTML = `<h5>Trip Name: 7 days in Savannah</h5>`;
@@ -443,6 +450,7 @@
 
 
                              cpic.height="160";
+                             cpic.width="600";
                              cpic.src="http://"+ini.receptionroom_pic;
 
                              hotelcpicTD.appendChild(cpic);
@@ -474,6 +482,8 @@
                              hoteldescTD.align="center";
 
                              cpic.height="160";
+                             cpic.width="600";
+
                              cpic.src="http://"+ini.bedroom_pic;
 
                              hotelcpicTD.appendChild(cpic);
@@ -505,6 +515,7 @@
                                hoteldescTD.align="center";
 
                              cpic.height="160";
+                             cpic.width="600";
                              cpic.src="http://"+ini.diningroom_pic;
 
                              hotelcpicTD.appendChild(cpic);
@@ -518,9 +529,22 @@
 
                              dParent.append(hotelName, hotelDesc, hotelCpic)
 
+                            // Adding Footer in Docx===>
+                             hotelCpic = document.createElement("tr");
+                              cpic = document.createElement("img");
 
+                              hotelcpicTD = document.createElement("td");
 
+                              cpic.height="160";
+                              cpic.width="600";
+                              cpic.src=`http://127.0.0.1:8000/uploads/${fdata.company_details[0].company_footer}`;
+                              hotelcpicTD.appendChild(cpic);
 
+                              hotelCpic.appendChild(hotelcpicTD);
+
+                              dParent.append(hotelCpic)
+
+                            // Adding Footer in Docx end===>
 
 
                            // hotelName.style="margin-bottom:10px; padding:10px; border: 2px solid rgba(0,0,0,0.5)";
@@ -574,12 +598,14 @@
                      var modalContent = document.getElementById("exampleModalCenter");
 
                      // Get the modal title and address
-                     var companyName = modalContent.querySelector("#mod_company");
-                     var address = modalContent.querySelector("#mod_address");
+                    //  var companyName = modalContent.querySelector("#mod_company");
+                    //  var address = modalContent.querySelector("#mod_address");
                      var mehad = modalContent.querySelector("#mhead");
+
 
                      // Get the date and trip summary details
                      var date = modalContent.querySelector("#mod_date").innerText;
+                     var hotelAdd = modalContent.querySelector("#mod_HandA").innerText;
                      var modid = modalContent.querySelector("#mod_id").innerText;
                      var fromDate = modalContent.querySelector("#mod_fromdt").innerText;
                      var toDate = modalContent.querySelector("#mod_todt").innerText;
@@ -589,18 +615,20 @@
 
                      // Set the document content
                      doc.setFontSize(12);
-                     doc.fromHTML(companyName, 15, 25);
-                     doc.fromHTML(address, 15, 35);
+                    //  doc.fromHTML(companyName, 15, 25);
+                    //  doc.fromHTML(address, 15, 35);
                      var imgData = new Image();
                      imgData.src = `http://127.0.0.1:8000/uploads/${globalFdata.company_details[0].company_header}`;
-                     doc.addImage(imgData, "", 15, 45, 20, 20);
+                     doc.addImage(imgData, "", 15, 20, 180, 50);
 
-                     doc.fromHTML("Date: " + date, 15, 60);
-                     doc.fromHTML(mehad, 15, 80);
-                     doc.fromHTML("Date: " + fromDate + " To " + toDate, 15, 90);
-                     doc.fromHTML("Total Adult travellers: " + adultTravellers, 15, 100);
-                     doc.fromHTML("Total Child travellers: " + childTravellers, 15, 110);
-                     doc.fromHTML("Total Rooms: " + totalRooms, 15, 120);
+                     doc.fromHTML("Date: " + date, 15, 80);
+                     doc.fromHTML("Quotation ID: " + modid, 120, 80);
+                     doc.fromHTML(mehad, 80, 100);
+                     doc.fromHTML("Date: " + fromDate + " To " + toDate, 15, 110);
+                     doc.fromHTML("Hotel Name and Address: " + hotelAdd, 15, 120);
+                     doc.fromHTML("Total Adult travellers: " + adultTravellers, 15, 130);
+                     doc.fromHTML("Total Child travellers: " + childTravellers, 15, 140);
+                     doc.fromHTML("Total Rooms: " + totalRooms, 15, 150);
 
 
 
@@ -610,7 +638,7 @@
 
                      // Generate the table using autoTable plugin
                      var options = {
-                       startY: 140, // Set the initial y-position for the table
+                       startY: 170, // Set the initial y-position for the table
                        margin: { top: 10 },
                        didDrawPage: function (data) {
                          // Add new page if the table exceeds the page height
@@ -627,9 +655,9 @@
                      });
                      doc.autoTable({ html: contra, startY: doc.autoTable.previous.finalY + 10 });
 
-                    //  var footerimgData = new Image();
-                    //  footerimgData.src = `http://127.0.0.1:8000/uploads/${globalFdata.company_details[0].company_footer}`;
-                    //  doc.addImage(footerimgData, "", 60, doc.autoTable.previous.finalY - 40, 100, 300);
+                     var footerimgData = new Image();
+                     footerimgData.src = `http://127.0.0.1:8000/uploads/${globalFdata.company_details[0].company_footer}`;
+                     doc.addImage(footerimgData, "", 15, doc.autoTable.previous.finalY + 2, 180, 50);
 
 
 
