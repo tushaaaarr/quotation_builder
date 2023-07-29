@@ -405,23 +405,12 @@
     aria-hidden="true"
   >
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-      <div
-        class="modal-content"
-        style="
-          background-image: linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)),
-            url('https://img.myloview.com/posters/creative-black-cat-logo-design-vector-stock-400-176246869.jpg');
-          background-position: center;
-          background-size: contain;
-        "
-      >
-        <div class="modal-header">
+      <div class="modal-content" id="watermarkImg" style="color: black !important">
+        <div class="modal-header" style="color: black !important">
           <div>
             <h5 class="modal-title" id="mod_company">Company Name</h5>
             <p class="fs-4 fw-lighter d-block mb-0 pb-0" id="mod_address">123 sesame street</p>
-            <img
-              src="https://img.myloview.com/posters/creative-black-cat-logo-design-vector-stock-400-176246869.jpg"
-              style="height: 80px; width: auto"
-            />
+            <img id="headerImg" src="" style="height: 80px; width: auto" />
           </div>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
@@ -434,8 +423,8 @@
           <p class="text-lead fw-bold"><span id="mod_id"> #123ACV69</span></p>
         </div>
 
-        <div class="modal-body">
-          <h5 class="fw-bold display-6" id="mhead">Trip Summary</h5>
+        <div class="modal-body" style="color: black">
+          <h5 class="fw-bold display-6 text-center" id="mhead">Trip Summary</h5>
           <p class="py-0 my-1">
             Date: <span id="mod_fromdt">22/05/2023</span> To
             <span id="mod_todt">22/06/2023</span>
@@ -451,7 +440,7 @@
               />
             </div> -->
 
-          <table class="table table-striped">
+          <table class="table table-striped" style="color: black">
             <thead class="bg-info text-light">
               <tr>
                 <th scope="col">Quantity</th>
@@ -483,6 +472,13 @@
                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Et asperiores deserunt vero
                 nemo! Totam cum alias magni obcaecati iusto consequuntur earum excepturi nesciunt
                 porro? Accusamus neque dolorem quasi necessitatibus iste.
+              </td>
+            </tr>
+          </table>
+          <table class="table" id="footer">
+            <tr>
+              <td class="text-center w-100">
+                <img id="footerImg" src="" style="height: 200px; width: auto" />
               </td>
             </tr>
           </table>

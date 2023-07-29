@@ -126,7 +126,7 @@
     <!-- Add Room -->
     <script>
 
-
+      var globalFdata;
 
                // Checking dates Availabilty Start=====>
 
@@ -317,9 +317,23 @@
 
                          console.log(this.responseText);
                          let fdata = JSON.parse(this.responseText);
+                         globalFdata = fdata;
                          console.log(fdata);
                          let tdate = new Date();
-                         document.getElementById("mod_company").innerHTML = fdata.hotel_name;
+                        // imgs watermark, header, footer start===>
+                        document.getElementById("watermarkImg").style = `
+                          background-image: linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)),
+                            url('http://127.0.0.1:8000/uploads/${fdata.company_details[0].company_logo_watermark}');
+                          background-position: center;
+                          background-size: contain`;
+
+                        document.getElementById("headerImg").src = `http://127.0.0.1:8000/uploads/${fdata.company_details[0].company_header}`;
+
+                        document.getElementById("footerImg").src = `http://127.0.0.1:8000/uploads/${fdata.company_details[0].company_footer}`;
+
+                        // imgs end ===>
+
+                         document.getElementById("mod_company").innerHTML = fdata.company_details[0].company_name;
                          document.getElementById("mod_address").innerHTML = fdata.area + "," + fdata.country;
                          document.getElementById("mod_date").innerHTML = tdate.toLocaleDateString();
                          document.getElementById("mod_id").innerHTML = fdata.quotation_id;
@@ -544,8 +558,8 @@
                        // Water Mark start
 
              var backgroundImage = new Image();
-             backgroundImage.src =
-             "{%static 'img/watermark.jpg' %}"
+             backgroundImage.src =`http://127.0.0.1:8000/uploads/${globalFdata.company_details[0].company_logo_watermark}`
+             backgroundImage.style=`opacity:0.5`;
              function addWatermark() {
                var imgWidth = doc.internal.pageSize.getWidth();
                var imgHeight = doc.internal.pageSize.getHeight();
@@ -578,7 +592,7 @@
                      doc.fromHTML(companyName, 15, 25);
                      doc.fromHTML(address, 15, 35);
                      var imgData = new Image();
-                     imgData.src = "{%static 'img/dummylogo.jpg' %}";
+                     imgData.src = `http://127.0.0.1:8000/uploads/${globalFdata.company_details[0].company_header}`;
                      doc.addImage(imgData, "", 15, 45, 20, 20);
 
                      doc.fromHTML("Date: " + date, 15, 60);
@@ -612,6 +626,13 @@
                        margin: options.margin,
                      });
                      doc.autoTable({ html: contra, startY: doc.autoTable.previous.finalY + 10 });
+
+                    //  var footerimgData = new Image();
+                    //  footerimgData.src = `http://127.0.0.1:8000/uploads/${globalFdata.company_details[0].company_footer}`;
+                    //  doc.addImage(footerimgData, "", 60, doc.autoTable.previous.finalY - 40, 100, 300);
+
+
+
 
                      // Save the document
                      doc.save("modal_data.pdf");
